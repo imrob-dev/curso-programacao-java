@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Apostila Java Básico</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm; }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    color: #232a31;
+    line-height: 1.55;
+    font-size: 10.5pt;
+    margin: 0;
+  }
+
+  /* ---------- CAPA ---------- */
+  .cover {
+    min-height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(150deg, #1b3a5b 0%, #2b5b8c 55%, #e8702a 160%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 40px;
+    break-after: page;
+  }
+  .cover .cup { font-size: 64pt; line-height: 1; margin-bottom: 10px; }
+  .cover h1 {
+    font-size: 40pt;
+    margin: 8px 0 0;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  .cover .accent { color: #ffb35c; }
+  .cover .sub {
+    font-size: 15pt;
+    font-weight: 400;
+    margin-top: 14px;
+    opacity: .92;
+  }
+  .cover .badge {
+    margin-top: 34px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.45);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 11pt;
+    font-weight: 600;
+  }
+  .cover .foot {
+    margin-top: 46px;
+    font-size: 10pt;
+    opacity: .8;
+  }
+
+  /* ---------- SUMÁRIO ---------- */
+  .toc {
+    break-after: page;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 22px 28px;
+  }
+  .toc h2 { border: 0; margin-top: 0; }
+  .toc ol {
+    columns: 2;
+    column-gap: 34px;
+    margin: 0;
+    padding-left: 18px;
+  }
+  .toc li { margin: 5px 0; break-inside: avoid; }
+
+  /* ---------- TÍTULOS ---------- */
+  h2 {
+    font-size: 17pt;
+    color: #1b3a5b;
+    margin: 26px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid #e8702a;
+    break-after: avoid;
+  }
+  h2 .num {
+    display: inline-block;
+    background: #e8702a;
+    color: #fff;
+    font-size: 12pt;
+    width: 30px; height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 8px;
+    margin-right: 10px;
+  }
+  h3 {
+    font-size: 12.5pt;
+    color: #2b5b8c;
+    margin: 18px 0 6px;
+    break-after: avoid;
+  }
+  p { margin: 8px 0; }
+
+  /* ---------- CÓDIGO ---------- */
+  pre {
+    background: #1e2330;
+    color: #e8eaf0;
+    border-left: 4px solid #e8702a;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    break-inside: avoid;
+    margin: 10px 0;
+  }
+  pre .cm { color: #8b97ab; font-style: italic; }
+  code {
+    font-family: Consolas, "Courier New", monospace;
+    background: #eef1f6;
+    color: #b5346b;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 9.2pt;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  /* ---------- TABELAS ---------- */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 9.6pt;
+    break-inside: avoid;
+  }
+  th {
+    background: #2b5b8c;
+    color: #fff;
+    text-align: left;
+    padding: 7px 10px;
+    font-weight: 600;
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #f4f7fa; }
+  td code, th code { background: rgba(255,255,255,.18); }
+  td code { background: #eef1f6; }
+
+  /* ---------- CAIXAS DE DESTAQUE ---------- */
+  .callout {
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 9.8pt;
+    break-inside: avoid;
+  }
+  .tip  { background: #ecf8f0; border-left: 4px solid #2e9e5b; }
+  .warn { background: #fff7e6; border-left: 4px solid #e0a000; }
+  .callout b { color: #1b3a5b; }
+
+  ul.clean { margin: 8px 0; padding-left: 20px; }
+  ul.clean li { margin: 4px 0; }
+
+  .end {
+    margin-top: 30px;
+    padding: 14px 18px;
+    background: #1b3a5b;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 9.8pt;
+    break-inside: avoid;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== CAPA ===================== -->
+<section class="cover">
+  <div class="cup">☕</div>
+  <h1>Apostila de <span class="accent">Java Básico</span></h1>
+  <div class="sub">Manual de consulta rápida — das variáveis às Collections</div>
+  <div class="badge">✓ Compatível com Java 8</div>
+  <div class="foot">Curso de Programação Java</div>
+</section>
+
+<!-- ===================== SUMÁRIO ===================== -->
+<section class="toc">
+  <h2>Índice</h2>
+  <ol>
+    <li>Estrutura de um programa</li>
+    <li>Variáveis e tipos de dados</li>
+    <li>Operadores</li>
+    <li>Entrada e saída de dados</li>
+    <li>Estruturas de decisão (if / switch)</li>
+    <li>Laços de repetição</li>
+    <li>Arrays (vetores e matrizes)</li>
+    <li>Strings</li>
+    <li>Métodos</li>
+    <li>Classes e Objetos (POO)</li>
+    <li>Encapsulamento</li>
+    <li>Herança</li>
+    <li>Polimorfismo</li>
+    <li>Classes abstratas e Interfaces</li>
+    <li>Collections (List, Set, Map)</li>
+    <li>Conversão de tipos (casting)</li>
+    <li>Dicas e boas práticas</li>
+  </ol>
+</section>
+
+<!-- ===================== 1 ===================== -->
+<h2><span class="num">1</span>Estrutura de um programa</h2>
+<p>Todo programa Java começa pelo método <code>main</code>:</p>
+<pre><code>public class MeuPrograma {
+    public static void main(String[] args) {
+        System.out.println("Ola, mundo!");
+    }
+}</code></pre>
+<ul class="clean">
+  <li>O <b>nome do arquivo</b> deve ser igual ao da classe pública: <code>MeuPrograma.java</code>.</li>
+  <li>Para compilar e executar:</li>
+</ul>
+<pre><code>javac MeuPrograma.java   <span class="cm"># gera MeuPrograma.class</span>
+java MeuPrograma         <span class="cm"># roda o programa</span></code></pre>
+
+<!-- ===================== 2 ===================== -->
+<h2><span class="num">2</span>Variáveis e tipos de dados</h2>
+<p>Uma variável guarda um valor. Em Java é preciso dizer <b>o tipo</b> dela:</p>
+<pre><code>int idade = 25;
+double altura = 1.75;
+char sexo = 'M';
+boolean ativo = true;
+String nome = "Ana";</code></pre>
+
+<h3>Tipos primitivos mais usados</h3>
+<table>
+  <thead><tr><th>Tipo</th><th>Guarda</th><th>Exemplo</th></tr></thead>
+  <tbody>
+    <tr><td><code>int</code></td><td>número inteiro</td><td><code>int x = 10;</code></td></tr>
+    <tr><td><code>long</code></td><td>inteiro muito grande</td><td><code>long n = 9999999999L;</code></td></tr>
+    <tr><td><code>double</code></td><td>número com casas decimais</td><td><code>double p = 3.50;</code></td></tr>
+    <tr><td><code>float</code></td><td>decimal (menor precisão)</td><td><code>float f = 3.5f;</code></td></tr>
+    <tr><td><code>char</code></td><td>um único caractere</td><td><code>char c = 'A';</code></td></tr>
+    <tr><td><code>boolean</code></td><td>verdadeiro ou falso</td><td><code>boolean b = true;</code></td></tr>
+  </tbody>
+</table>
+<div class="callout tip">💡 <b>String</b> não é primitivo (é uma classe), por isso começa com letra maiúscula.</div>
+
+<h3>Constantes</h3>
+<p>Use <code>final</code> para um valor que nunca muda:</p>
+<pre><code>final double PI = 3.14159;</code></pre>
+
+<!-- ===================== 3 ===================== -->
+<h2><span class="num">3</span>Operadores</h2>
+
+<h3>Aritméticos</h3>
+<table>
+  <thead><tr><th>Operador</th><th>Faz</th><th>Exemplo (a=10, b=3)</th><th>Resultado</th></tr></thead>
+  <tbody>
+    <tr><td><code>+</code></td><td>soma</td><td><code>a + b</code></td><td><code>13</code></td></tr>
+    <tr><td><code>-</code></td><td>subtração</td><td><code>a - b</code></td><td><code>7</code></td></tr>
+    <tr><td><code>*</code></td><td>multiplicação</td><td><code>a * b</code></td><td><code>30</code></td></tr>
+    <tr><td><code>/</code></td><td>divisão</td><td><code>a / b</code></td><td><code>3</code> (inteira!)</td></tr>
+    <tr><td><code>%</code></td><td>resto</td><td><code>a % b</code></td><td><code>1</code></td></tr>
+  </tbody>
+</table>
+<div class="callout warn">⚠️ <code>10 / 3</code> dá <code>3</code> porque os dois são <code>int</code>. Para ter <code>3.33...</code>, use <code>double</code>: <code>10.0 / 3</code>.</div>
+
+<h3>Relacionais (retornam true/false)</h3>
+<p><code>==</code> (igual), <code>!=</code> (diferente), <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></p>
+<div class="callout tip">💡 Para comparar <b>Strings</b> use <code>.equals()</code>, não <code>==</code>: &nbsp; <code>nome.equals("Ana")</code></div>
+
+<h3>Lógicos</h3>
+<table>
+  <thead><tr><th>Operador</th><th>Significa</th><th>Exemplo</th></tr></thead>
+  <tbody>
+    <tr><td><code>&amp;&amp;</code></td><td>E</td><td><code>idade &gt; 18 &amp;&amp; ativo</code></td></tr>
+    <tr><td><code>||</code></td><td>OU</td><td><code>a == 1 || a == 2</code></td></tr>
+    <tr><td><code>!</code></td><td>NÃO</td><td><code>!ativo</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Atribuição e incremento</h3>
+<pre><code>x += 5;   <span class="cm">// x = x + 5</span>
+x -= 2;   <span class="cm">// x = x - 2</span>
+x++;      <span class="cm">// x = x + 1</span>
+x--;      <span class="cm">// x = x - 1</span></code></pre>
+
+<!-- ===================== 4 ===================== -->
+<h2><span class="num">4</span>Entrada e saída de dados</h2>
+
+<h3>Saída (mostrar na tela)</h3>
+<pre><code>System.out.println("Pula linha no final");
+System.out.print("Nao pula linha");
+System.out.printf("Nome: %s, Idade: %d%n", nome, idade);  <span class="cm">// formatado</span></code></pre>
+<p><b>Marcadores do printf:</b> <code>%s</code> texto · <code>%d</code> inteiro · <code>%f</code> decimal · <code>%.2f</code> 2 casas · <code>%c</code> caractere · <code>%n</code> quebra de linha.</p>
+
+<h3>Entrada (ler do teclado) com Scanner</h3>
+<pre><code>import java.util.Scanner;
+
+Scanner sc = new Scanner(System.in);
+System.out.print("Digite seu nome: ");
+String nome = sc.nextLine();   <span class="cm">// le uma linha inteira</span>
+
+System.out.print("Digite sua idade: ");
+int idade = sc.nextInt();      <span class="cm">// le um inteiro</span></code></pre>
+<table>
+  <thead><tr><th>Método</th><th>Lê</th></tr></thead>
+  <tbody>
+    <tr><td><code>nextLine()</code></td><td>uma linha de texto</td></tr>
+    <tr><td><code>next()</code></td><td>uma palavra</td></tr>
+    <tr><td><code>nextInt()</code></td><td>um inteiro</td></tr>
+    <tr><td><code>nextDouble()</code></td><td>um decimal</td></tr>
+  </tbody>
+</table>
+<div class="callout tip">💡 <b>Dica de ouro:</b> misturar <code>nextInt()</code> com <code>nextLine()</code> causa bugs (sobra um "Enter"). Uma solução simples é ler tudo com <code>nextLine()</code> e converter com <code>Integer.parseInt(...)</code> / <code>Double.parseDouble(...)</code>.</div>
+
+<!-- ===================== 5 ===================== -->
+<h2><span class="num">5</span>Estruturas de decisão</h2>
+
+<h3>if / else</h3>
+<pre><code>if (idade &gt;= 18) {
+    System.out.println("Maior de idade");
+} else if (idade &gt;= 12) {
+    System.out.println("Adolescente");
+} else {
+    System.out.println("Crianca");
+}</code></pre>
+
+<h3>switch</h3>
+<pre><code>switch (opcao) {
+    case 1:
+        System.out.println("Um");
+        break;          <span class="cm">// break evita "cair" no proximo case</span>
+    case 2:
+        System.out.println("Dois");
+        break;
+    default:
+        System.out.println("Opcao invalida");
+}</code></pre>
+
+<!-- ===================== 6 ===================== -->
+<h2><span class="num">6</span>Laços de repetição</h2>
+
+<h3>for (quando se sabe quantas vezes)</h3>
+<pre><code>for (int i = 0; i &lt; 5; i++) {
+    System.out.println("i = " + i);
+}</code></pre>
+
+<h3>while (enquanto a condição for verdadeira)</h3>
+<pre><code>int i = 0;
+while (i &lt; 5) {
+    System.out.println(i);
+    i++;
+}</code></pre>
+
+<h3>do-while (executa pelo menos uma vez)</h3>
+<pre><code>int opcao;
+do {
+    <span class="cm">// mostra menu e le opcao...</span>
+} while (opcao != 0);</code></pre>
+
+<h3>for-each (percorre coleções/arrays)</h3>
+<pre><code>for (String nome : nomes) {
+    System.out.println(nome);
+}</code></pre>
+
+<h3>Controle de fluxo</h3>
+<ul class="clean">
+  <li><code>break</code> → sai do laço imediatamente.</li>
+  <li><code>continue</code> → pula para a próxima repetição.</li>
+</ul>
+
+<!-- ===================== 7 ===================== -->
+<h2><span class="num">7</span>Arrays</h2>
+<p>Um array guarda <b>vários valores do mesmo tipo</b> com tamanho fixo.</p>
+<pre><code>int[] numeros = new int[5];        <span class="cm">// 5 posicoes (0 a 4), comecam em 0</span>
+numeros[0] = 10;                   <span class="cm">// grava na posicao 0</span>
+int x = numeros[0];                <span class="cm">// le a posicao 0</span>
+
+double[] notas = {8.5, 7.0, 9.5};  <span class="cm">// ja criando com valores</span>
+int qtd = notas.length;            <span class="cm">// tamanho do array (3)</span></code></pre>
+
+<h3>Percorrer</h3>
+<pre><code>for (int i = 0; i &lt; notas.length; i++) {
+    System.out.println(notas[i]);
+}
+<span class="cm">// ou com for-each:</span>
+for (double nota : notas) {
+    System.out.println(nota);
+}</code></pre>
+
+<h3>Matriz (array de duas dimensões)</h3>
+<pre><code>int[][] matriz = new int[3][3];   <span class="cm">// 3 linhas x 3 colunas</span>
+matriz[0][0] = 1;</code></pre>
+<div class="callout warn">⚠️ Acessar uma posição que não existe gera erro <code>ArrayIndexOutOfBoundsException</code>.</div>
+
+<!-- ===================== 8 ===================== -->
+<h2><span class="num">8</span>Strings</h2>
+<p><code>String</code> é texto. Alguns métodos muito usados:</p>
+<pre><code>String s = "Java Basico";
+
+s.length();            <span class="cm">// 11  -> quantidade de caracteres</span>
+s.toUpperCase();       <span class="cm">// "JAVA BASICO"</span>
+s.toLowerCase();       <span class="cm">// "java basico"</span>
+s.charAt(0);           <span class="cm">// 'J' -> caractere de uma posicao</span>
+s.substring(0, 4);     <span class="cm">// "Java"</span>
+s.indexOf("Basico");   <span class="cm">// 5  -> posicao onde comeca (ou -1)</span>
+s.replace("a", "@");   <span class="cm">// "J@v@ B@sico"</span>
+s.trim();              <span class="cm">// remove espacos das pontas</span>
+s.isEmpty();           <span class="cm">// false -> true se for ""</span>
+s.equals("Java");      <span class="cm">// false -> compara conteudo</span>
+s.equalsIgnoreCase("JAVA BASICO"); <span class="cm">// true</span>
+s.contains("Java");    <span class="cm">// true</span>
+s.split(" ");          <span class="cm">// ["Java", "Basico"] -> separa em um array</span></code></pre>
+<div class="callout tip">💡 Para juntar textos use <code>+</code>: &nbsp; <code>"Ola " + nome</code></div>
+
+<!-- ===================== 9 ===================== -->
+<h2><span class="num">9</span>Métodos</h2>
+<p>Um método é um bloco de código reutilizável.</p>
+<pre><code><span class="cm">//            tipo de retorno   nome      parametros</span>
+public static double calcularMedia(double n1, double n2) {
+    return (n1 + n2) / 2;   <span class="cm">// retorna um valor</span>
+}</code></pre>
+<p><code>void</code> = não retorna nada:</p>
+<pre><code>public static void exibirMensagem(String texto) {
+    System.out.println(texto);
+}</code></pre>
+<p><b>Chamada:</b></p>
+<pre><code>double m = calcularMedia(8.0, 6.0);  <span class="cm">// m = 7.0</span>
+exibirMensagem("Ola!");</code></pre>
+
+<h3>Sobrecarga (mesmo nome, parâmetros diferentes)</h3>
+<pre><code>static int somar(int a, int b)         { return a + b; }
+static int somar(int a, int b, int c)  { return a + b + c; }
+static double somar(double a, double b) { return a + b; }</code></pre>
+
+<h3>Escopo</h3>
+<p>Uma variável criada <b>dentro</b> de um método (ou bloco) só existe ali dentro.</p>
+
+<!-- ===================== 10 ===================== -->
+<h2><span class="num">10</span>Classes e Objetos (POO)</h2>
+<p>Uma <b>classe</b> é o molde; um <b>objeto</b> é uma instância (cópia real) desse molde.</p>
+<pre><code>public class Pessoa {
+    String nome;     <span class="cm">// atributos (caracteristicas)</span>
+    int idade;
+
+    <span class="cm">// construtor: roda quando criamos o objeto</span>
+    public Pessoa(String nome, int idade) {
+        this.nome = nome;     <span class="cm">// this = "este objeto"</span>
+        this.idade = idade;
+    }
+
+    void apresentar() {       <span class="cm">// metodo (comportamento)</span>
+        System.out.println("Sou " + nome + ", tenho " + idade);
+    }
+}</code></pre>
+<pre><code><span class="cm">// criando e usando o objeto:</span>
+Pessoa p = new Pessoa("Ana", 30);
+p.apresentar();   <span class="cm">// Sou Ana, tenho 30</span>
+System.out.println(p.nome);</code></pre>
+
+<!-- ===================== 11 ===================== -->
+<h2><span class="num">11</span>Encapsulamento</h2>
+<p>Proteger os atributos: deixá-los <code>private</code> e dar acesso por métodos <code>get</code>/<code>set</code>.</p>
+<pre><code>public class Conta {
+    private double saldo;     <span class="cm">// ninguem altera direto de fora</span>
+
+    public double getSaldo() {            <span class="cm">// getter -> le o valor</span>
+        return saldo;
+    }
+
+    public void setSaldo(double saldo) {  <span class="cm">// setter -> altera com regra</span>
+        if (saldo &gt;= 0) {
+            this.saldo = saldo;
+        }
+    }
+}</code></pre>
+<ul class="clean">
+  <li><code>private</code> → só a própria classe acessa.</li>
+  <li><code>public</code> → qualquer classe acessa.</li>
+</ul>
+<p>Benefício: você controla <b>como</b> os dados são lidos e alterados (pode validar).</p>
+
+<!-- ===================== 12 ===================== -->
+<h2><span class="num">12</span>Herança</h2>
+<p>Uma classe pode <b>herdar</b> atributos e métodos de outra, com <code>extends</code>.</p>
+<pre><code>public class Animal {
+    void comer() {
+        System.out.println("Comendo...");
+    }
+}
+
+public class Cachorro extends Animal {   <span class="cm">// Cachorro "e um" Animal</span>
+    void latir() {
+        System.out.println("Au au!");
+    }
+}</code></pre>
+<pre><code>Cachorro c = new Cachorro();
+c.comer();   <span class="cm">// herdado de Animal</span>
+c.latir();   <span class="cm">// proprio de Cachorro</span></code></pre>
+<ul class="clean">
+  <li><code>super</code> chama algo da classe-mãe (ex.: <code>super(nome)</code> chama o construtor).</li>
+  <li><code>@Override</code> indica que estamos reescrevendo um método herdado.</li>
+</ul>
+<pre><code>public class Gato extends Animal {
+    @Override
+    void comer() {
+        System.out.println("O gato come peixe");
+    }
+}</code></pre>
+
+<!-- ===================== 13 ===================== -->
+<h2><span class="num">13</span>Polimorfismo</h2>
+<p>"Muitas formas": o mesmo método se comporta diferente conforme o objeto.</p>
+<pre><code>Animal a1 = new Cachorro();
+Animal a2 = new Gato();
+
+a1.comer();   <span class="cm">// comportamento do Cachorro</span>
+a2.comer();   <span class="cm">// comportamento do Gato</span></code></pre>
+<p>Mesmo a variável sendo do tipo <code>Animal</code>, Java executa o método <b>do objeto real</b>. Isso permite guardar tipos diferentes num mesmo array:</p>
+<pre><code>Animal[] animais = { new Cachorro(), new Gato() };
+for (Animal a : animais) {
+    a.comer();   <span class="cm">// cada um come do seu jeito</span>
+}</code></pre>
+
+<!-- ===================== 14 ===================== -->
+<h2><span class="num">14</span>Classes abstratas e Interfaces</h2>
+
+<h3>Classe abstrata</h3>
+<p>Serve de <b>base</b> e não pode ser instanciada. Pode ter métodos prontos e métodos abstratos (sem corpo, que as filhas são obrigadas a implementar).</p>
+<pre><code>public abstract class Forma {
+    abstract double calcularArea();   <span class="cm">// sem corpo: cada forma faz do seu jeito</span>
+
+    void descrever() {                <span class="cm">// metodo normal, ja pronto</span>
+        System.out.println("Area: " + calcularArea());
+    }
+}
+
+public class Circulo extends Forma {
+    double raio;
+    Circulo(double raio) { this.raio = raio; }
+
+    @Override
+    double calcularArea() {
+        return 3.14159 * raio * raio;
+    }
+}</code></pre>
+
+<h3>Interface</h3>
+<p>Um "contrato": só diz <b>o que</b> a classe deve fazer, sem como. Usa-se <code>implements</code>.</p>
+<pre><code>public interface Imprimivel {
+    void imprimir();   <span class="cm">// metodos da interface sao abstratos</span>
+}
+
+public class Boleto implements Imprimivel {
+    @Override
+    public void imprimir() {
+        System.out.println("Imprimindo boleto...");
+    }
+}</code></pre>
+<table>
+  <thead><tr><th>Classe abstrata</th><th>Interface</th></tr></thead>
+  <tbody>
+    <tr><td>Usa <code>extends</code> (só 1)</td><td>Usa <code>implements</code> (pode várias)</td></tr>
+    <tr><td>Pode ter código pronto</td><td>Foca no contrato (o "o quê")</td></tr>
+    <tr><td>Pode ter atributos comuns</td><td>Define o que a classe é capaz de fazer</td></tr>
+  </tbody>
+</table>
+
+<!-- ===================== 15 ===================== -->
+<h2><span class="num">15</span>Collections</h2>
+<p>Estruturas que guardam <b>vários objetos</b> e crescem dinamicamente (diferente do array, que tem tamanho fixo). Ficam no pacote <code>java.util</code>.</p>
+
+<h3>List / ArrayList — lista ordenada, aceita repetidos</h3>
+<pre><code>import java.util.ArrayList;
+import java.util.List;
+
+List&lt;String&gt; nomes = new ArrayList&lt;&gt;();
+nomes.add("Ana");           <span class="cm">// adiciona</span>
+nomes.add("Bruno");
+nomes.get(0);               <span class="cm">// "Ana" -> pega pela posicao</span>
+nomes.set(0, "Ana Paula");  <span class="cm">// altera a posicao 0</span>
+nomes.remove("Bruno");      <span class="cm">// remove</span>
+nomes.size();               <span class="cm">// quantidade</span>
+nomes.contains("Ana Paula");<span class="cm">// true</span>
+
+for (String nome : nomes) {
+    System.out.println(nome);
+}</code></pre>
+
+<h3>Set / HashSet — coleção SEM elementos repetidos</h3>
+<pre><code>import java.util.HashSet;
+import java.util.Set;
+
+Set&lt;String&gt; tags = new HashSet&lt;&gt;();
+tags.add("java");
+tags.add("java");   <span class="cm">// ignorado: nao repete</span>
+tags.size();        <span class="cm">// 1</span></code></pre>
+
+<h3>Map / HashMap — pares chave → valor</h3>
+<pre><code>import java.util.HashMap;
+import java.util.Map;
+
+Map&lt;String, Integer&gt; idades = new HashMap&lt;&gt;();
+idades.put("Ana", 30);       <span class="cm">// adiciona/atualiza</span>
+idades.put("Bruno", 25);
+idades.get("Ana");           <span class="cm">// 30 -> busca pela chave</span>
+idades.containsKey("Ana");   <span class="cm">// true</span>
+idades.remove("Bruno");
+
+for (Map.Entry&lt;String, Integer&gt; e : idades.entrySet()) {
+    System.out.println(e.getKey() + " -> " + e.getValue());
+}</code></pre>
+<table>
+  <thead><tr><th>Coleção</th><th>Repete?</th><th>Ordem</th><th>Acesso por</th></tr></thead>
+  <tbody>
+    <tr><td><code>List</code></td><td>sim</td><td>mantém ordem de inserção</td><td>índice (posição)</td></tr>
+    <tr><td><code>Set</code></td><td>não</td><td>não garante ordem</td><td>só percorrendo</td></tr>
+    <tr><td><code>Map</code></td><td>chaves não</td><td>não garante ordem</td><td>chave</td></tr>
+  </tbody>
+</table>
+
+<!-- ===================== 16 ===================== -->
+<h2><span class="num">16</span>Conversão de tipos (casting)</h2>
+
+<h3>Texto → número</h3>
+<pre><code>int n = Integer.parseInt("42");
+double d = Double.parseDouble("3.5");</code></pre>
+
+<h3>Número → texto</h3>
+<pre><code>String s = String.valueOf(42);   <span class="cm">// "42"</span>
+String s2 = "" + 42;             <span class="cm">// "42" (atalho)</span></code></pre>
+
+<h3>Entre números</h3>
+<pre><code>double d = 3.9;
+int i = (int) d;     <span class="cm">// 3  (corta as casas decimais, NAO arredonda)</span>
+
+int x = 5;
+double y = x;        <span class="cm">// 5.0 (automatico, sem perda)</span></code></pre>
+
+<!-- ===================== 17 ===================== -->
+<h2><span class="num">17</span>Dicas e boas práticas</h2>
+<ul class="clean">
+  <li>✅ <b>Nomes claros:</b> <code>idadeUsuario</code> é melhor que <code>iu</code>.</li>
+  <li>✅ <b>Convenções:</b> classes em <code>PascalCase</code>; variáveis e métodos em <code>camelCase</code>; constantes em <code>MAIUSCULAS</code>.</li>
+  <li>✅ <b>Um método, uma tarefa:</b> métodos curtos e com uma responsabilidade só (alta coesão).</li>
+  <li>✅ <b>Evite repetir código:</b> se copiou e colou, provavelmente cabe um método.</li>
+  <li>✅ <b>Compare Strings com</b> <code>.equals()</code>, nunca com <code>==</code>.</li>
+  <li>✅ <b>Indente o código</b> para ficar legível.</li>
+  <li>✅ <b>Comente o "porquê"</b>, não o óbvio.</li>
+  <li>⚠️ Cuidado com <b>divisão inteira</b> (<code>10/3 = 3</code>) e com <b>índices fora do array</b>.</li>
+</ul>
+
+<div class="end">📚 Esta apostila resume o conteúdo de Java básico do curso. Para aprofundar, consulte os slides de cada aula e pratique com os exercícios.</div>
+
+</body>
+</html>
