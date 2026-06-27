@@ -46,9 +46,9 @@ public class Menu {
      * Mostra o titulo/abertura do sistema.
      */
     public static void intro() {
-        System.out.printf("%s                                         %s%n", CF_AMARELO, RESET);
+        System.out.printf("%s                                           %s%n", CF_AMARELO, RESET);
         System.out.printf("%s%s   ### MEGASTORE - SISTEMA DE ESTOQUE ###  %s%n", CF_AMARELO, CT_PRETO, RESET);
-        System.out.printf("%s                                         %s%n", CF_AMARELO, RESET);
+        System.out.printf("%s                                           %s%n", CF_AMARELO, RESET);
     }
 
     /**
