@@ -1,0 +1,13 @@
+# Arquivos compilados Java
+*.class
+
+# Pastas de build/saida
+build/
+out/
+bin/
+
+# Arquivos de IDE
+.idea/
+*.iml
+.vscode/
+nbproject/private/
