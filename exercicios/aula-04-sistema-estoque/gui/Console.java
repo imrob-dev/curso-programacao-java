@@ -1,7 +1,10 @@
+package gui;
+
 import java.util.Scanner;
 
 /**
- * A classe Console cuida de TODA a entrada de dados do usuario.
+ * A classe Console cuida de TODA a entrada de dados do usuario pelo teclado
+ * (e tambem de pausar e limpar a tela).
  *
  * Para evitar erros comuns de iniciante (como o problema do nextInt() que
  * deixa "lixo" no Scanner), aqui sempre lemos uma linha inteira com
@@ -10,7 +13,7 @@ import java.util.Scanner;
  */
 public class Console {
 
-    private static final Scanner sc = new Scanner(System.in);
+    private static final Scanner teclado = new Scanner(System.in);
 
     /**
      * Le um numero inteiro qualquer (usado nos menus).
@@ -20,7 +23,7 @@ public class Console {
     public static int lerOpcao() {
         while (true) {
             System.out.print("\nDigite uma opcao: ");
-            String linha = sc.nextLine().trim();
+            String linha = teclado.nextLine().trim();
             try {
                 return Integer.parseInt(linha);
             } catch (NumberFormatException e) {
@@ -38,7 +41,7 @@ public class Console {
     public static String lerTexto(String rotulo) {
         while (true) {
             System.out.print(rotulo + ": ");
-            String texto = sc.nextLine().trim();
+            String texto = teclado.nextLine().trim();
             if (!texto.isEmpty()) {
                 return texto;
             }
@@ -55,7 +58,7 @@ public class Console {
     public static double lerPrecoNaoNegativo(String rotulo) {
         while (true) {
             System.out.print(rotulo + ": ");
-            String linha = sc.nextLine().trim().replace(",", ".");
+            String linha = teclado.nextLine().trim().replace(",", ".");
             try {
                 double valor = Double.parseDouble(linha);
                 if (valor >= 0) {
@@ -77,7 +80,7 @@ public class Console {
     public static int lerInteiroNaoNegativo(String rotulo) {
         while (true) {
             System.out.print(rotulo + ": ");
-            String linha = sc.nextLine().trim();
+            String linha = teclado.nextLine().trim();
             try {
                 int valor = Integer.parseInt(linha);
                 if (valor >= 0) {
@@ -100,7 +103,7 @@ public class Console {
     public static int lerIndice(String rotulo, int total) {
         while (true) {
             System.out.print(rotulo + ": ");
-            String linha = sc.nextLine().trim();
+            String linha = teclado.nextLine().trim();
             try {
                 int numero = Integer.parseInt(linha);
                 if (numero >= 1 && numero <= total) {
@@ -122,7 +125,7 @@ public class Console {
     public static boolean confirmar(String pergunta) {
         while (true) {
             System.out.print(pergunta + " (S/N)? ");
-            String resposta = sc.nextLine().trim();
+            String resposta = teclado.nextLine().trim();
             if (resposta.equalsIgnoreCase("S")) {
                 return true;
             }
@@ -138,7 +141,7 @@ public class Console {
      */
     public static void pausar() {
         System.out.print("\nPressione ENTER para continuar...");
-        sc.nextLine();
+        teclado.nextLine();
     }
 
     /**

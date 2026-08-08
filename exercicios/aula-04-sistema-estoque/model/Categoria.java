@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa uma categoria de produtos do estoque.
  * Exemplos: "Eletronicos", "Perifericos".

@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa um produto do estoque.
  *

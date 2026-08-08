@@ -1,3 +1,5 @@
+package gui;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -33,13 +35,19 @@ public class Menu {
             NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
     /**
+     * Espaco "nao separavel" (NBSP) que o Java coloca entre "R$" e o valor.
+     * Trocamos ele por um espaco comum para as colunas da tabela ficarem alinhadas.
+     */
+    private static final char ESPACO_NAO_SEPARAVEL = '\u00A0';
+
+    /**
      * Transforma um numero em texto de dinheiro no formato brasileiro.
      *
      * @param valor O valor a ser formatado.
      * @return Texto como "R$ 3.500,00".
      */
     public static String moeda(double valor) {
-        return MOEDA.format(valor).replace(' ', ' ');
+        return MOEDA.format(valor).replace(ESPACO_NAO_SEPARAVEL, ' ');
     }
 
     /**
@@ -73,6 +81,17 @@ public class Menu {
         System.out.println("[ 3 ] - Alterar Produto");
         System.out.println("[ 4 ] - Excluir Produto");
         System.out.printf("%s[ 0 ] - Voltar%s%n", CT_VERMELHO, RESET);
+    }
+
+    /**
+     * Mostra as opcoes de campos que podem ser alterados em um produto.
+     */
+    public static void menuCamposProduto() {
+        System.out.printf("%n%sO que deseja alterar?%s%n", CT_LARANJA, RESET);
+        System.out.println("[ 1 ] - Nome");
+        System.out.println("[ 2 ] - Preco");
+        System.out.println("[ 3 ] - Quantidade");
+        System.out.println("[ 4 ] - Categoria");
     }
 
     /**
