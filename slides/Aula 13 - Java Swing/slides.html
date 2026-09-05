@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Java Swing - Do Console à Interface Gráfica</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        @page {
+            size: 1920px 1080px;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            padding: 55px 80px;
+            page-break-after: always;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #ea580c, #f97316, #fb923c);
+        }
+
+        /* Subtle background watermark pattern */
+        .slide::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #fed7aa;
+            padding-bottom: 16px;
+        }
+
+        .header .category {
+            font-size: 17px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ea580c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header .course-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .slide-title {
+            font-size: 44px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-top: 15px;
+            letter-spacing: -1px;
+            line-height: 1.15;
+        }
+
+        .slide-subtitle {
+            font-size: 22px;
+            color: #475569;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .content {
+            flex: 1;
+            margin-top: 25px;
+            display: flex;
+            gap: 45px;
+            align-items: stretch;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-orange {
+            border-left: 6px solid #ea580c;
+            background: #fffaf5;
+            border-top: 1px solid #ffedd5;
+            border-right: 1px solid #ffedd5;
+            border-bottom: 1px solid #ffedd5;
+        }
+
+        .card-slate {
+            border-left: 6px solid #475569;
+            background: #f8fafc;
+        }
+
+        .card-emerald {
+            border-left: 6px solid #059669;
+            background: #f0fdf4;
+            border-top: 1px solid #dcfce7;
+            border-right: 1px solid #dcfce7;
+            border-bottom: 1px solid #dcfce7;
+        }
+
+        .card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-orange h3 {
+            color: #c2410c;
+        }
+
+        .card-emerald h3 {
+            color: #047857;
+        }
+
+        .card p, .card li {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        ul {
+            list-style-position: inside;
+            margin-left: 6px;
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* High-Contrast Code Box for Classroom Projectors */
+        .code-container {
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            background: #27272a;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #3f3f46;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .code-header-title {
+            color: #a1a1aa;
+            font-size: 14px;
+            font-family: 'Fira Code', monospace;
+            margin-left: 10px;
+        }
+
+        pre {
+            padding: 22px 28px;
+            font-family: 'Fira Code', monospace;
+            font-size: 19px;
+            line-height: 1.55;
+            color: #f4f4f5;
+            overflow: hidden;
+        }
+
+        .kw { color: #fb923c; font-weight: 700; } /* Orange keyword */
+        .type { color: #38bdf8; font-weight: 600; } /* Light blue type */
+        .str { color: #4ade80; } /* Emerald string */
+        .comment { color: #94a3b8; font-style: italic; }
+        .method { color: #fde047; } /* Warm yellow method */
+        .num { color: #f472b6; }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-orange { background: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+        .badge-slate { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-green { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+        /* Cover Slide */
+        .cover-slide {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            align-items: center;
+            padding: 0 100px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff7ed 60%, #ffedd5 100%);
+        }
+
+        .cover-img {
+            width: 100%;
+            height: 650px;
+            object-fit: cover;
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(234, 88, 12, 0.15), 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 4px solid #ffffff;
+        }
+
+        /* Tables */
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 20px;
+            margin-top: 10px;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid #fed7aa;
+        }
+
+        .table-custom th {
+            background: #ea580c;
+            color: #ffffff;
+            padding: 18px 24px;
+            text-align: left;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .table-custom td {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .table-custom tr:nth-child(even) td {
+            background: #fffaf5;
+        }
+
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: CAPA -->
+    <div class="slide cover-slide">
+        <div>
+            <div style="margin-bottom: 24px;">
+                <span class="badge badge-orange">Curso de Programação Java</span>
+                <span class="badge badge-slate" style="margin-left: 10px;">Interface Gráfica</span>
+            </div>
+            <h1 style="font-size: 66px; font-weight: 900; line-height: 1.15; margin-bottom: 24px; color: #0f172a;">
+                Construindo Interfaces Desktop com <span style="color: #ea580c;">Java Swing</span>
+            </h1>
+            <p style="font-size: 26px; color: #475569; line-height: 1.45; margin-bottom: 40px; font-weight: 500;">
+                Do console à aplicação visual completa: dominando eventos, componentes e tabelas no projeto Agenda de Contatos.
+            </p>
+            <div style="display: flex; gap: 24px; font-size: 20px; color: #64748b; font-weight: 600;">
+                <div><span style="color: #ea580c;">●</span> Java SE & Swing</div>
+                <div><span style="color: #ea580c;">●</span> NetBeans GUI Builder</div>
+                <div><span style="color: #ea580c;">●</span> Projeto GerenciaContatos</div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <img src="swing_orange_cover_1788574476839.jpg" alt="Java Swing UI" class="cover-img">
+        </div>
+    </div>
+
+    <!-- SLIDE 2: MUDANÇA DE PARADIGMA -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>⚡</span> Conceito Fundamental</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Do Terminal à Interface Gráfica (GUI)</h2>
+            <p class="slide-subtitle">A grande virada: saindo do fluxo linear para a programação orientada a eventos.</p>
+        </div>
+        <div class="content">
+            <div class="col">
+                <div class="card card-slate">
+                    <h3>💻 Terminal / Console (Fluxo Linear)</h3>
+                    <ul>
+                        <li>O programa dita rigidamente o ritmo de execução.</li>
+                        <li>Execução sequencial em laço <code>while (opcao != 0)</code>.</li>
+                        <li>O código <strong>pausa e bloqueia</strong> aguardando <code>Scanner.nextLine()</code>.</li>
+                        <li>O usuário fica restrito às opções enumeradas no menu textual.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-orange">
+                    <h3>🖱️ Interface Gráfica / Swing (Reativo)</h3>
+                    <ul>
+                        <li>A aplicação desenha a tela e entra em estado de espera.</li>
+                        <li>O programa permanece vivo graças à <strong>Event Dispatch Thread (EDT)</strong>.</li>
+                        <li>O usuário dita o ritmo: clica, digita, redimensiona ou fecha.</li>
+                        <li>Ações disparam <strong>Eventos</strong> que acionam métodos ouvintes (<em>Listeners</em>).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 2 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: ANATOMIA DO SWING -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🧱</span> Estrutura</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Anatomia de uma Aplicação Swing</h2>
+            <p class="slide-subtitle">Hierarquia de componentes: Containers de topo e elementos visuais.</p>
+        </div>
+        <div class="content">
+            <div class="col">
+                <div class="card card-orange">
+                    <h3>1. Janelas e Containers</h3>
+                    <p><strong><code>JFrame</code></strong>: A janela principal da aplicação com barra de título, botões de fechar e minimizar.</p>
+                    <p style="margin-top: 12px;"><strong><code>JPanel</code></strong>: Painel intermediário usado para organizar e agrupar componentes.</p>
+                </div>
+                <div class="card card-slate">
+                    <h3>2. Gerenciadores de Layout</h3>
+                    <p>Definem o posicionamento e redimensionamento automático:</p>
+                    <p style="margin-top: 8px;"><code>FlowLayout</code>, <code>BorderLayout</code>, <code>GridLayout</code> ou <code>GroupLayout</code> (utilizado pelo gerador visual do NetBeans).</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-emerald">
+                    <h3>3. Componentes Atômicos de Formulário</h3>
+                    <ul style="margin-top: 10px;">
+                        <li><strong><code>JLabel</code>:</strong> Textos fixos para identificação dos campos.</li>
+                        <li><strong><code>JTextField</code>:</strong> Caixas de texto editáveis (Nome, Telefone, Email).</li>
+                        <li><strong><code>JButton</code>:</strong> Botões de ação clicáveis (Salvar, Atualizar, Excluir).</li>
+                        <li><strong><code>JTable</code>:</strong> Grade tabular para visualização dos contatos do banco.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 3 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: JFRAME E INICIALIZAÇÃO -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🚀</span> Inicialização</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">O Ponto de Entrada: Criando o <code>JFrame</code></h2>
+            <p class="slide-subtitle">Como instanciar e exibir a janela com boas práticas e segurança de threads.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.3;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">Tela.java</span>
+                    </div>
+<pre><span class="kw">package</span> gerenciacontato.gui;
+
+<span class="kw">import</span> javax.swing.JFrame;
+
+<span class="kw">public class</span> <span class="type">Tela</span> <span class="kw">extends</span> <span class="type">JFrame</span> {
+
+    <span class="kw">public</span> <span class="method">Tela</span>() {
+        <span class="method">initComponents</span>(); <span class="comment">// Constrói componentes visuais</span>
+        <span class="method">setLocationRelativeTo</span>(<span class="kw">null</span>); <span class="comment">// Centraliza no monitor</span>
+    }
+
+    <span class="kw">public static void</span> <span class="method">main</span>(String[] args) {
+        <span class="comment">/* Inicializa a GUI dentro da Thread de Eventos (EDT) */</span>
+        java.awt.<span class="type">EventQueue</span>.<span class="method">invokeLater</span>(<span class="kw">new</span> <span class="type">Runnable</span>() {
+            <span class="kw">public void</span> <span class="method">run</span>() {
+                <span class="kw">new</span> <span class="type">Tela</span>().<span class="method">setVisible</span>(<span class="kw">true</span>);
+            }
+        });
+    }
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.85;">
+                <div class="card card-orange">
+                    <h3>💡 Pontos Essenciais</h3>
+                    <ul>
+                        <li><strong><code>initComponents()</code>:</strong> Inicializa botões, caixas de texto e coordenadas.</li>
+                        <li><strong><code>setLocationRelativeTo(null)</code>:</strong> Evita que a janela abra colada no canto superior da tela.</li>
+                        <li><strong><code>EventQueue.invokeLater</code>:</strong> Garante thread-safety na renderização da interface, prevenindo conflitos gráficos.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 4 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: CAPTURANDO DADOS DO FORMULÁRIO -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>📝</span> Formulário</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Lendo os Campos de Entrada (<code>JTextField</code>)</h2>
+            <p class="slide-subtitle">Resgatando, tratando e sanitizando as strings digitadas pelo usuário.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.25;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">Captura e Validação</span>
+                    </div>
+<pre><span class="comment">// Captura o texto com .getText() e remove espaços extras</span>
+<span class="type">String</span> nome = txtNome.<span class="method">getText</span>().<span class="method">trim</span>();
+<span class="type">String</span> telefone = txtTelefone.<span class="method">getText</span>().<span class="method">trim</span>();
+<span class="type">String</span> email = txtEmail.<span class="method">getText</span>().<span class="method">trim</span>();
+
+<span class="comment">// Validação visual preventiva</span>
+<span class="kw">if</span> (nome.<span class="method">isEmpty</span>()) {
+    <span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(<span class="kw">this</span>, 
+        <span class="str">"O campo Nome é obrigatório!"</span>, 
+        <span class="str">"Aviso"</span>, 
+        <span class="type">JOptionPane</span>.WARNING_MESSAGE);
+    txtNome.<span class="method">requestFocus</span>(); <span class="comment">// Devolve o cursor</span>
+    <span class="kw">return</span>;
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.9;">
+                <div class="card card-orange">
+                    <h3>Por que usar <code>.trim()</code>?</h3>
+                    <p>Elimina espaços em branco no início e final da digitação, evitando que o aluno salve registros acidentalmente em branco.</p>
+                </div>
+                <div class="card card-emerald">
+                    <h3>Foco com <code>requestFocus()</code></h3>
+                    <p>Se a validação falhar, o cursor retorna automaticamente ao campo correspondente, agilizando a correção pelo usuário.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 5 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: EVENTOS DO BOTÃO -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🎯</span> Eventos</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Ouvindo o Clique: <code>ActionListener</code></h2>
+            <p class="slide-subtitle">Conectando o botão Salvar à regra de negócio do <code>ContatoService</code>.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.3;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">btnSalvarActionPerformed</span>
+                    </div>
+<pre><span class="kw">private void</span> <span class="method">btnSalvarActionPerformed</span>(java.awt.event.<span class="type">ActionEvent</span> evt) {
+    <span class="type">String</span> nome = txtNome.<span class="method">getText</span>().<span class="method">trim</span>();
+    <span class="type">String</span> telefone = txtTelefone.<span class="method">getText</span>().<span class="method">trim</span>();
+    <span class="type">String</span> email = txtEmail.<span class="method">getText</span>().<span class="method">trim</span>();
+
+    <span class="comment">// 1. Chama a camada de Serviço (reaproveitada do console)</span>
+    contatoService.<span class="method">cadastrarContato</span>(nome, telefone, email);
+
+    <span class="comment">// 2. Exibe diálogo de confirmação visual</span>
+    <span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(<span class="kw">this</span>, <span class="str">"Contato salvo com sucesso!"</span>);
+
+    <span class="comment">// 3. Limpa o formulário para o próximo cadastro</span>
+    <span class="method">limparCampos</span>();
+}
+
+<span class="kw">private void</span> <span class="method">limparCampos</span>() {
+    txtNome.<span class="method">setText</span>(<span class="str">""</span>);
+    txtTelefone.<span class="method">setText</span>(<span class="str">""</span>);
+    txtEmail.<span class="method">setText</span>(<span class="str">""</span>);
+    txtNome.<span class="method">requestFocus</span>();
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.85;">
+                <div class="card card-orange">
+                    <h3>Separação de Camadas</h3>
+                    <p>A tela <strong>não contém SQL</strong> e <strong>não abre conexão JDBC</strong>.</p>
+                    <p style="margin-top: 14px;">Ela apenas colhe a entrada do usuário e aciona o <code>ContatoService</code>, garantindo reutilização e clareza de código.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 6 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: FEEDBACK COM JOPTIONPANE -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>💬</span> Feedback Visual</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Caixas de Diálogo com <code>JOptionPane</code></h2>
+            <p class="slide-subtitle">Adeus <code>System.out.println</code>: diálogo nativo direto na tela.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.2;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">Diálogos de Mensagem</span>
+                    </div>
+<pre><span class="comment">// 1. Mensagem de Sucesso (Informativa)</span>
+<span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(
+    <span class="kw">this</span>, 
+    <span class="str">"Contato salvo com sucesso!"</span>, 
+    <span class="str">"Sucesso"</span>, 
+    <span class="type">JOptionPane</span>.INFORMATION_MESSAGE
+);
+
+<span class="comment">// 2. Alerta de Validação</span>
+<span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(
+    <span class="kw">this</span>, 
+    <span class="str">"Por favor, informe um telefone válido."</span>, 
+    <span class="str">"Aviso"</span>, 
+    <span class="type">JOptionPane</span>.WARNING_MESSAGE
+);
+
+<span class="comment">// 3. Mensagem de Erro de Banco</span>
+<span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(
+    <span class="kw">this</span>, 
+    <span class="str">"Falha ao conectar ao banco de dados."</span>, 
+    <span class="str">"Erro de Conexão"</span>, 
+    <span class="type">JOptionPane</span>.ERROR_MESSAGE
+);</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.9;">
+                <div class="card card-orange">
+                    <h3>O parâmetro <code>parentComponent</code></h3>
+                    <p>Passar <code>this</code> (a própria janela) como primeiro argumento faz a caixa de diálogo abrir <strong>centralizada sobre a janela mãe</strong>, e não no canto do monitor.</p>
+                </div>
+                <div class="card card-slate">
+                    <h3>Regra de Ouro da Interface Gráfica</h3>
+                    <p>O usuário final <strong>não visualiza o console</strong>. Toda comunicação de sucesso, aviso ou falha precisa ser exibida na interface gráfica.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 7 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: TABELAS E MODELOS -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>📊</span> Listagens</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Exibindo Dados: <code>JTable</code> & <code>DefaultTableModel</code></h2>
+            <p class="slide-subtitle">A separação fundamental entre Componente Visual e Modelo de Dados.</p>
+        </div>
+        <div class="content">
+            <div class="col">
+                <div class="card card-orange">
+                    <h3>O que é a <code>JTable</code>?</h3>
+                    <p>É a casca visual responsável por desenhar a grade, as linhas e colunas, lidar com o cabeçalho e suportar barra de rolagem (<code>JScrollPane</code>).</p>
+                </div>
+                <div class="card card-emerald">
+                    <h3>O que é o <code>DefaultTableModel</code>?</h3>
+                    <p>É a estrutura em memória que armazena os dados das células. <strong>Nunca adicionamos linhas diretamente na JTable</strong>: nós manipulamos o Modelo!</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-slate" style="background: #fffaf5; border: 2px solid #fdba74;">
+                    <h3 style="color: #c2410c;">Fluxo de Atualização da Tabela</h3>
+                    <div style="font-family: 'Fira Code', monospace; font-size: 20px; line-height: 2.1; padding: 15px 0; color: #0f172a;">
+                        1. <code>contatoService.listarContatos()</code><br>
+                        &nbsp;&nbsp;&nbsp;⬇️ Retorna <code>List&lt;Contato&gt;</code><br>
+                        2. <code>DefaultTableModel model = (DefaultTableModel) tbl.getModel()</code><br>
+                        &nbsp;&nbsp;&nbsp;⬇️ Limpa com <code>model.setRowCount(0)</code><br>
+                        3. <code>model.addRow(new Object[]{ id, nome, tel, email })</code><br>
+                        &nbsp;&nbsp;&nbsp;⬇️<br>
+                        <strong style="color: #ea580c;">✨ Tela atualizada instantaneamente!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 8 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: CÓDIGO CARREGAR TABELA -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>⚙️</span> Implementação</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Preenchendo a Tabela com o Banco</h2>
+            <p class="slide-subtitle">O método <code>carregarTabela()</code> passo a passo.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.3;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">carregarTabela()</span>
+                    </div>
+<pre><span class="kw">private void</span> <span class="method">carregarTabela</span>() {
+    <span class="comment">// 1. Obtém o modelo associado à tabela visual</span>
+    <span class="type">DefaultTableModel</span> modelo = (<span class="type">DefaultTableModel</span>) tblContatos.<span class="method">getModel</span>();
+
+    <span class="comment">// 2. Limpa linhas anteriores (evita duplicar na tela)</span>
+    modelo.<span class="method">setRowCount</span>(<span class="num">0</span>);
+
+    <span class="comment">// 3. Busca a lista atualizada do Service</span>
+    <span class="type">List</span>&lt;<span class="type">Contato</span>&gt; lista = contatoService.<span class="method">listarContatos</span>();
+
+    <span class="comment">// 4. Itera e insere linha a linha no modelo</span>
+    <span class="kw">for</span> (<span class="type">Contato</span> c : lista) {
+        modelo.<span class="method">addRow</span>(<span class="kw">new</span> <span class="type">Object</span>[] {
+            c.<span class="method">getId</span>(),
+            c.<span class="method">getNome</span>(),
+            c.<span class="method">getTelefone</span>(),
+            c.<span class="method">getEmail</span>()
+        });
+    }
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.85;">
+                <div class="card card-orange">
+                    <h3>Onde chamar este método?</h3>
+                    <p><strong>1. No construtor da tela:</strong> Logo após o <code>initComponents()</code> para abrir a aplicação já com os dados populados.</p>
+                    <p style="margin-top: 15px;"><strong>2. Sempre após Salvar, Atualizar ou Excluir:</strong> Mantendo a interface visual 100% sincronizada com o banco.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 9 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: SELEÇÃO NA TABELA -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🖱️</span> Interação</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Selecionando Linhas para Edição</h2>
+            <p class="slide-subtitle">Capturando o clique do mouse na tabela e carregando o formulário.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.3;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">tblContatosMouseClicked</span>
+                    </div>
+<pre><span class="kw">private void</span> <span class="method">tblContatosMouseClicked</span>(java.awt.event.<span class="type">MouseEvent</span> evt) {
+    <span class="type">int</span> linha = tblContatos.<span class="method">getSelectedRow</span>();
+
+    <span class="kw">if</span> (linha != -<span class="num">1</span>) {
+        <span class="comment">// Resgata valores da linha selecionada</span>
+        <span class="type">String</span> id = tblContatos.<span class="method">getValueAt</span>(linha, <span class="num">0</span>).<span class="method">toString</span>();
+        <span class="type">String</span> nome = tblContatos.<span class="method">getValueAt</span>(linha, <span class="num">1</span>).<span class="method">toString</span>();
+        <span class="type">String</span> telefone = tblContatos.<span class="method">getValueAt</span>(linha, <span class="num">2</span>).<span class="method">toString</span>();
+        <span class="type">String</span> email = tblContatos.<span class="method">getValueAt</span>(linha, <span class="num">3</span>).<span class="method">toString</span>();
+
+        <span class="comment">// Preenche os campos do formulário para edição</span>
+        txtId.<span class="method">setText</span>(id);
+        txtNome.<span class="method">setText</span>(nome);
+        txtTelefone.<span class="method">setText</span>(telefone);
+        txtEmail.<span class="method">setText</span>(email);
+    }
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.85;">
+                <div class="card card-orange">
+                    <h3>Verificação Preventiva</h3>
+                    <p>Sempre teste se <code>getSelectedRow() != -1</code>. Se o usuário clicar no cabeçalho ou fora de uma linha válida, o retorno será <code>-1</code>.</p>
+                </div>
+                <div class="card card-slate">
+                    <h3>Campo ID Protegido</h3>
+                    <p>O campo <code>txtId</code> deve ter <code>txtId.setEnabled(false)</code> para evitar que o usuário altere a chave primária manualmente!</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 10 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: EXCLUSÃO SEGURA -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🗑️</span> Exclusão</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Exclusão com Diálogo de Confirmação</h2>
+            <p class="slide-subtitle">Evitando acidentes: <code>JOptionPane.showConfirmDialog</code>.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.3;">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span class="code-dot dot-red"></span>
+                        <span class="code-dot dot-yellow"></span>
+                        <span class="code-dot dot-green"></span>
+                        <span class="code-header-title">btnExcluirActionPerformed</span>
+                    </div>
+<pre><span class="kw">private void</span> <span class="method">btnExcluirActionPerformed</span>(java.awt.event.<span class="type">ActionEvent</span> evt) {
+    <span class="type">int</span> linha = tblContatos.<span class="method">getSelectedRow</span>();
+    <span class="kw">if</span> (linha == -<span class="num">1</span>) {
+        <span class="type">JOptionPane</span>.<span class="method">showMessageDialog</span>(<span class="kw">this</span>, <span class="str">"Selecione um contato na tabela!"</span>);
+        <span class="kw">return</span>;
+    }
+
+    <span class="comment">// Diálogo de confirmação com opções Sim e Não</span>
+    <span class="type">int</span> resposta = <span class="type">JOptionPane</span>.<span class="method">showConfirmDialog</span>(
+        <span class="kw">this</span>, 
+        <span class="str">"Deseja realmente excluir este contato?"</span>, 
+        <span class="str">"Confirmar Exclusão"</span>, 
+        <span class="type">JOptionPane</span>.YES_NO_OPTION
+    );
+
+    <span class="kw">if</span> (resposta == <span class="type">JOptionPane</span>.YES_OPTION) {
+        <span class="type">int</span> id = <span class="type">Integer</span>.<span class="method">parseInt</span>(tblContatos.<span class="method">getValueAt</span>(linha, <span class="num">0</span>).<span class="method">toString</span>());
+        contatoService.<span class="method">excluirContato</span>(id);
+        
+        <span class="method">carregarTabela</span>();   <span class="comment">// Atualiza a grade</span>
+        <span class="method">limparCampos</span>();     <span class="comment">// Limpa o formulário</span>
+    }
+}</pre>
+                </div>
+            </div>
+            <div class="col" style="flex: 0.85;">
+                <div class="card card-orange">
+                    <h3>Experiência do Usuário (UX)</h3>
+                    <p>Ações destrutivas nunca devem ser executadas imediatamente no primeiro clique.</p>
+                    <p style="margin-top: 14px;">O <code>showConfirmDialog</code> protege o usuário contra perdas acidentais de dados importantes no banco.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 11 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: ARQUITETURA EM CAMADAS -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>🏛️</span> Arquitetura</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Arquitetura de Software: Separação em Camadas</h2>
+            <p class="slide-subtitle">Por que trocar o console por Swing não exigiu reescrever o banco de dados.</p>
+        </div>
+        <div class="content">
+            <div class="col" style="flex: 1.1;">
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Camada</th>
+                            <th>Responsabilidade no Sistema</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>View (GUI / Swing)</strong></td>
+                            <td>Captura cliques, digitação e desenha a interface visual.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Service</strong></td>
+                            <td>Validações de regras de negócio e coordenação de fluxo.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DAO</strong></td>
+                            <td>Executa comandos SQL, gerencia conexões e transações.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Model (Contato)</strong></td>
+                            <td>Entidade com atributos, getters, setters e construtores.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col" style="flex: 0.9; text-align: center;">
+                <img src="orange_arch_diag_1788574500584.jpg" alt="Architecture" style="width: 100%; border-radius: 20px; border: 2px solid #fed7aa; box-shadow: 0 15px 35px rgba(234,88,12,0.12);">
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 12 / 13</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: DESAFIO PRÁTICO -->
+    <div class="slide">
+        <div class="header">
+            <div class="category"><span>💪</span> Mão na Massa</div>
+            <div class="course-name">Java Swing • Aula 01</div>
+        </div>
+        <div>
+            <h2 class="slide-title">Desafio Prático para a Turma</h2>
+            <p class="slide-subtitle">Exercícios para consolidar o aprendizado em sala de aula.</p>
+        </div>
+        <div class="content">
+            <div class="col">
+                <div class="card card-orange">
+                    <h3>1. Botão "Limpar"</h3>
+                    <p>Adicione um botão que limpa todos os campos de texto do formulário, desseleciona a tabela e coloca o foco do cursor em <code>txtNome</code>.</p>
+                </div>
+                <div class="card card-slate">
+                    <h3>2. Botão "Atualizar"</h3>
+                    <p>Permita ao aluno selecionar uma linha, editar os dados nos campos e, ao clicar em "Atualizar", persistir as alterações via <code>contatoService.atualizarContato(...)</code>.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-emerald">
+                    <h3>3. Desafio Bônus: Controle de Estado dos Botões</h3>
+                    <p>Ao abrir a tela, mantenha os botões <strong>Atualizar</strong> e <strong>Excluir</strong> desabilitados (<code>setEnabled(false)</code>).</p>
+                    <p style="margin-top: 14px;">Habilite-os (<code>setEnabled(true)</code>) apenas quando o usuário selecionar um contato na tabela!</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <span>Agenda de Contatos</span>
+            <span>Slide 13 / 13</span>
+        </div>
+    </div>
+
+</body>
+</html>
