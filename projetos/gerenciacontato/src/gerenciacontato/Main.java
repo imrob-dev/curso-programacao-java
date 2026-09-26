@@ -2,6 +2,7 @@ package gerenciacontato;
 
 import gerenciacontato.gui.ConsoleGUI;
 import gerenciacontato.gui.TelaPrincipal;
+import gerenciacontato.gui.TelaPrincipalv2;
 
 public class Main {
 
