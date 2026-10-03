@@ -11,3 +11,4 @@ bin/
 *.iml
 .vscode/
 nbproject/private/
+/projetos/oficina/.nb-gradle/
