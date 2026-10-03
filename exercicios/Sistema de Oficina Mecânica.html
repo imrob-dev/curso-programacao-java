@@ -1,0 +1,759 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sistema de Oficina Mecânica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: documento de especificação em coluna única; protótipos Swing em "bancada" com moldura de janela desktop. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --fg: #1d2731;
+  --muted: #5b6875;
+  --line: #d5dce3;
+  --accent: #0f5d8c;      /* azul de macacão */
+  --accent-soft: #e2eef6;
+  --warn: #b5650f;        /* âmbar de sinalização */
+  --warn-soft: #fbf0e2;
+  --code-bg: #eef1f4;
+
+  /* janela Swing: aparência fixa nos dois temas (é a imagem de um app desktop) */
+  --win-frame: #8a96a3;
+  --win-title-a: #3f6f99;
+  --win-title-b: #2c5277;
+  --win-bg: #e9ecef;
+  --win-fg: #1b1f24;
+  --win-field: #ffffff;
+  --win-border: #9aa5b1;
+  --win-btn-a: #fbfcfd;
+  --win-btn-b: #dde2e7;
+  --win-sel: #cfe2f3;
+  --win-head: #dfe4e9;
+
+  --f-display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  --f-swing: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141a20; --surface: #1b232b; --fg: #e3e8ed; --muted: #9aa7b4; --line: #2e3a46;
+    --accent: #6fb3e0; --accent-soft: #1d3446; --warn: #e6a15a; --warn-soft: #3a2a19; --code-bg: #212b35;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141a20; --surface: #1b232b; --fg: #e3e8ed; --muted: #9aa7b4; --line: #2e3a46;
+  --accent: #6fb3e0; --accent-soft: #1d3446; --warn: #e6a15a; --warn-soft: #3a2a19; --code-bg: #212b35;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 1rem/1.6 var(--f-body);
+}
+.page { max-width: 64rem; margin: 0 auto; padding-inline: 1rem; padding-block: 2rem 4rem; }
+
+header.capa { border-bottom: 3px solid var(--accent); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+.eyebrow { font: 600 .8rem/1 var(--f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.1; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); margin: .4rem 0 .6rem; letter-spacing: .01em; }
+h2 { font-size: 1.9rem; margin: 3rem 0 1rem; padding-top: .5rem; border-top: 1px solid var(--line); }
+h2 .num { color: var(--accent); margin-right: .4rem; }
+h3 { font-size: 1.45rem; margin: 2.2rem 0 .6rem; }
+h3 .tag { font: 600 .8rem/1 var(--f-mono); color: var(--accent); background: var(--accent-soft); padding: .25rem .45rem; border-radius: 4px; vertical-align: middle; margin-right: .5rem; }
+p, li { max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 60ch; margin: 0; }
+.meta { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1rem; font-size: .9rem; color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 600; }
+
+nav.indice { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.25rem; }
+nav.indice ol { margin: 0; padding-left: 1.4rem; columns: 2 16rem; column-gap: 2rem; }
+nav.indice a { color: var(--accent); text-decoration: none; }
+nav.indice a:hover, nav.indice a:focus-visible { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+code { font: .88em var(--f-mono); background: var(--code-bg); padding: .1em .35em; border-radius: 3px; }
+pre { font: .85rem/1.55 var(--f-mono); background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.1rem; overflow-x: auto; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: inherit; }
+
+.tabela { overflow-x: auto; margin: 1rem 0; }
+table.doc { border-collapse: collapse; width: 100%; font-size: .95rem; background: var(--surface); }
+table.doc th, table.doc td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.doc th { font-weight: 600; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); }
+table.doc td code { white-space: nowrap; }
+.num-col { font-variant-numeric: tabular-nums; }
+
+.duas { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+.duas > div { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: .9rem 1.1rem; }
+.duas h4 { margin: 0 0 .4rem; font: 600 .8rem/1 var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.duas ul { margin: 0; padding-left: 1.1rem; }
+
+.nota { border-left: 4px solid var(--warn); background: var(--warn-soft); padding: .8rem 1rem; border-radius: 0 6px 6px 0; margin: 1rem 0; }
+.nota b { color: var(--warn); }
+
+/* Diagrama de entidades */
+.der { display: flex; flex-wrap: wrap; align-items: stretch; gap: .5rem; margin: 1rem 0; }
+.ent { flex: 1 1 10.5rem; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 6px; padding: .6rem .8rem; font-size: .88rem; }
+.ent h5 { margin: 0 0 .35rem; font: 700 1.15rem/1 var(--f-display); }
+.ent ul { list-style: none; margin: 0; padding: 0; font-family: var(--f-mono); font-size: .78rem; }
+.ent li.pk::before { content: "PK "; color: var(--accent); font-weight: 600; }
+.ent li.fk::before { content: "FK "; color: var(--warn); font-weight: 600; }
+.ent li:not(.pk):not(.fk) { padding-left: 1.65em; }
+.rel { align-self: center; font: 600 .85rem var(--f-mono); color: var(--muted); white-space: nowrap; }
+.rel-nota { font-size: .9rem; color: var(--muted); }
+
+/* Bancada dos protótipos */
+.bancada { overflow-x: auto; background: repeating-linear-gradient(45deg, var(--code-bg) 0 10px, var(--bg) 10px 20px); border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem 1rem; margin: 1rem 0; }
+.bancada-centro { display: flex; justify-content: center; min-width: max-content; }
+
+/* Janela Swing */
+.win { font: 13px/1.35 var(--f-swing); color: var(--win-fg); background: var(--win-bg); border: 1px solid var(--win-frame); border-radius: 6px 6px 3px 3px; box-shadow: 0 6px 18px rgba(20, 30, 40, .25); overflow: hidden; }
+.win-title { display: flex; align-items: center; gap: .5rem; padding: 5px 8px; background: linear-gradient(var(--win-title-a), var(--win-title-b)); color: #fff; font-weight: 600; font-size: 12.5px; }
+.win-title .ico { width: 14px; height: 14px; border-radius: 3px; background: #f0b45a; flex: none; }
+.win-title .t { flex: 1; }
+.win-title .ctl { display: flex; gap: 4px; }
+.win-title .ctl i { display: block; width: 16px; height: 14px; border-radius: 3px; background: rgba(255,255,255,.25); }
+.win-title .ctl i:last-child { background: #c9524a; }
+.win-body { padding: 14px 16px; }
+.menubar { display: flex; gap: 2px; padding: 3px 6px; background: var(--win-head); border-bottom: 1px solid var(--win-border); }
+.menubar span { padding: 2px 8px; }
+.menubar span.aberto { background: var(--win-sel); border: 1px solid var(--win-border); border-bottom: none; }
+.statusbar { display: flex; justify-content: space-between; gap: 1rem; padding: 3px 8px; border-top: 1px solid var(--win-border); background: var(--win-head); font-size: 12px; }
+
+.form { display: grid; grid-template-columns: max-content 1fr; gap: 8px 10px; align-items: center; }
+.form label { text-align: right; }
+.in { display: block; min-height: 24px; padding: 3px 6px; background: var(--win-field); border: 1px solid var(--win-border); border-radius: 3px; color: var(--win-fg); white-space: nowrap; overflow: hidden; }
+.in.vazio { color: #8b96a1; }
+.in.combo { position: relative; padding-right: 22px; }
+.in.combo::after { content: "▾"; position: absolute; right: 0; top: 0; bottom: 0; width: 18px; display: grid; place-items: center; border-left: 1px solid var(--win-border); background: linear-gradient(var(--win-btn-a), var(--win-btn-b)); }
+.in.area { white-space: normal; min-height: 48px; }
+.in.ro { background: #f1f3f5; color: #59636d; }
+.chk { display: inline-flex; align-items: center; gap: 6px; }
+.chk i { width: 13px; height: 13px; border: 1px solid var(--win-border); background: var(--win-field); border-radius: 2px; display: grid; place-items: center; font-style: normal; font-size: 11px; line-height: 1; }
+
+.botoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.botoes.dir { justify-content: flex-end; }
+.btn { display: inline-block; padding: 3px 14px; min-width: 76px; text-align: center; border: 1px solid var(--win-border); border-radius: 4px; background: linear-gradient(var(--win-btn-a), var(--win-btn-b)); color: var(--win-fg); }
+.btn.def { border-color: #5a88b3; box-shadow: inset 0 0 0 1px #9cc0e2; }
+.btn.off { color: #9aa3ab; }
+
+.grupo { border: 1px solid var(--win-border); border-radius: 4px; padding: 14px 10px 10px; position: relative; margin-top: 8px; }
+.grupo > .leg { position: absolute; top: -9px; left: 8px; padding: 0 4px; background: var(--win-bg); color: #2c5277; font-weight: 600; }
+
+.jtable { border: 1px solid var(--win-border); background: var(--win-field); margin-top: 10px; }
+.jtable table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+.jtable th { background: linear-gradient(var(--win-btn-a), var(--win-head)); font-weight: 600; text-align: left; padding: 3px 6px; border-right: 1px solid var(--win-border); border-bottom: 1px solid var(--win-border); white-space: nowrap; }
+.jtable td { padding: 3px 6px; border-right: 1px solid #e3e7eb; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.jtable tr.sel td { background: var(--win-sel); }
+.jtable td.r { text-align: right; }
+.st { display: inline-block; padding: 0 6px; border-radius: 3px; font-size: 11.5px; font-weight: 600; }
+.st.ab { background: #fff1c9; color: #7a5300; }
+.st.and { background: #d7e9fb; color: #1d4f80; }
+.st.co { background: #d8f0dc; color: #1f6b2d; }
+.st.ca { background: #eceef0; color: #5d6670; }
+
+.barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.erro { display: flex; align-items: center; gap: 6px; color: #a2322a; font-size: 12px; margin-top: 8px; }
+.erro i { width: 14px; height: 14px; border-radius: 50%; background: #c9524a; color: #fff; display: grid; place-items: center; font: 700 10px/1 var(--f-swing); font-style: normal; }
+.logo { width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #f0b45a, #c97f22); display: grid; place-items: center; color: #3b2508; font: 700 26px/1 var(--f-display); flex: none; }
+.lado { display: flex; gap: 14px; align-items: flex-start; }
+.desktop { background: #c9d3dc; height: 150px; display: grid; place-items: center; color: #6b7884; font-size: 12px; }
+
+.legenda { font-size: .88rem; color: var(--muted); text-align: center; margin-top: .6rem; }
+ul.comportamento { padding-left: 1.2rem; }
+ul.comportamento li { margin: .25rem 0; }
+
+.check { list-style: none; padding: 0; }
+.check li { padding-left: 1.8rem; position: relative; margin: .4rem 0; }
+.check li::before { content: ""; position: absolute; left: 0; top: .3rem; width: 1rem; height: 1rem; border: 2px solid var(--accent); border-radius: 3px; }
+
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media (max-width: 30rem) { h2 { font-size: 1.6rem; } }
+</style>
+<div class="page">
+
+<header class="capa">
+  <div class="eyebrow">Curso de Programação Java · Projeto de sala de aula · Java Swing + JDBC</div>
+  <h1>Sistema de Oficina Mecânica</h1>
+  <p class="lead">Especificação do projeto que a turma desenvolve em sala: uma aplicação desktop para uma pequena oficina controlar usuários, clientes, veículos e ordens de serviço.</p>
+  <div class="meta">
+    <span><b>Pré-requisito:</b> projeto <code>gerenciacontato</code> (Aulas 12 e 13)</span>
+    <span><b>Banco:</b> PostgreSQL</span>
+    <span><b>Java:</b> 8</span>
+    <span><b>Duração sugerida:</b> 7 encontros</span>
+  </div>
+</header>
+
+<nav class="indice" aria-label="Índice">
+  <ol>
+    <li><a href="#objetivo">Objetivo</a></li>
+    <li><a href="#escopo">Escopo</a></li>
+    <li><a href="#entidades">Entidades</a></li>
+    <li><a href="#banco">Banco de dados</a></li>
+    <li><a href="#regras">Regras de negócio</a></li>
+    <li><a href="#telas">Telas e protótipos</a></li>
+    <li><a href="#estrutura">Estrutura do projeto</a></li>
+    <li><a href="#roteiro">Roteiro das aulas</a></li>
+    <li><a href="#extras">Extras</a></li>
+    <li><a href="#avaliacao">Critérios de avaliação</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<h2 id="objetivo"><span class="num">1.</span>Objetivo</h2>
+<p>Construir, em Java Swing, um sistema em que o funcionário da oficina <b>entra com usuário e senha</b>, cadastra os <b>clientes</b> e seus <b>veículos</b> e registra as <b>ordens de serviço (OS)</b> feitas em cada veículo, do recebimento até a entrega.</p>
+<p>O projeto continua o <code>gerenciacontato</code>: usa a mesma organização em camadas (<code>model → dao → service → gui</code>) e acrescenta o que ainda falta à turma.</p>
+<div class="tabela">
+<table class="doc">
+  <thead><tr><th>Conteúdo novo</th><th>Onde aparece</th></tr></thead>
+  <tbody>
+    <tr><td>Autenticação e senha guardada como hash (SHA-256)</td><td>Tela de login, cadastro de usuários</td></tr>
+    <tr><td>Controle de acesso por perfil</td><td>Menu Administração (só <code>ADMIN</code>)</td></tr>
+    <tr><td>Relacionamento 1:N com chave estrangeira e <code>JOIN</code></td><td>Veículos, ordens de serviço</td></tr>
+    <tr><td><code>JComboBox</code> carregado do banco</td><td>Dono do veículo, veículo da OS</td></tr>
+    <tr><td><code>enum</code> para valores fixos</td><td>Perfil do usuário, status da OS</td></tr>
+    <tr><td>Regras de negócio na camada service</td><td>Todas as telas</td></tr>
+    <tr><td>Várias janelas: <code>JMenuBar</code>, <code>JDialog</code> modal</td><td>Tela principal, edição da OS</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- 2 -->
+<h2 id="escopo"><span class="num">2.</span>Escopo</h2>
+<div class="duas">
+  <div>
+    <h4>Entra no projeto</h4>
+    <ul>
+      <li>Login de usuários e cadastro de usuários</li>
+      <li>Perfis <code>ADMIN</code> e <code>ATENDENTE</code></li>
+      <li>Cadastro de clientes</li>
+      <li>Cadastro de veículos ligados ao cliente</li>
+      <li>Ordens de serviço com status e valor</li>
+      <li>Listagem de OS com filtro por status</li>
+    </ul>
+  </div>
+  <div>
+    <h4>Fica de fora</h4>
+    <ul>
+      <li>Recuperação de senha por e-mail</li>
+      <li>Estoque de peças e compras</li>
+      <li>Nota fiscal e financeiro</li>
+      <li>Relatórios impressos</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 3 -->
+<h2 id="entidades"><span class="num">3.</span>Entidades</h2>
+<div class="der" role="img" aria-label="Cliente 1 para N Veículo; Veículo 1 para N Ordem de Serviço; Usuário 1 para N Ordem de Serviço">
+  <div class="ent">
+    <h5>Cliente</h5>
+    <ul><li class="pk">id</li><li>nome</li><li>telefone</li><li>cpf</li></ul>
+  </div>
+  <div class="rel">1 ── N</div>
+  <div class="ent">
+    <h5>Veiculo</h5>
+    <ul><li class="pk">id</li><li>placa</li><li>marca</li><li>modelo</li><li>ano</li><li class="fk">id_cliente</li></ul>
+  </div>
+  <div class="rel">1 ── N</div>
+  <div class="ent">
+    <h5>OrdemServico</h5>
+    <ul><li class="pk">id</li><li class="fk">id_veiculo</li><li class="fk">id_usuario</li><li>data_abertura</li><li>data_conclusao</li><li>descricao_problema</li><li>servico_realizado</li><li>valor_mao_obra</li><li>status</li></ul>
+  </div>
+  <div class="rel">N ── 1</div>
+  <div class="ent">
+    <h5>Usuario</h5>
+    <ul><li class="pk">id</li><li>nome</li><li>login</li><li>senha_hash</li><li>perfil</li><li>ativo</li></ul>
+  </div>
+</div>
+<p class="rel-nota">Um cliente tem vários veículos; um veículo tem várias OS; cada OS guarda o usuário que a abriu. Chaves estrangeiras seguem o padrão <code>id_&lt;tabela&gt;</code>.</p>
+
+<div class="tabela">
+<table class="doc">
+  <thead><tr><th>Entidade</th><th>Campo</th><th>Tipo Java</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="6"><b>Usuario</b></td><td><code>id</code></td><td>Integer</td><td>gerado pelo banco</td></tr>
+    <tr><td><code>nome</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>login</code></td><td>String</td><td>obrigatório, único</td></tr>
+    <tr><td><code>senhaHash</code></td><td>String</td><td>SHA-256 em hexadecimal (64 caracteres); nunca a senha em texto</td></tr>
+    <tr><td><code>perfil</code></td><td>Perfil (enum)</td><td><code>ADMIN</code> ou <code>ATENDENTE</code></td></tr>
+    <tr><td><code>ativo</code></td><td>boolean</td><td>usuário inativo não entra no sistema</td></tr>
+    <tr><td rowspan="4"><b>Cliente</b></td><td><code>id</code></td><td>Integer</td><td>gerado pelo banco</td></tr>
+    <tr><td><code>nome</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>telefone</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>cpf</code></td><td>String</td><td>opcional, único</td></tr>
+    <tr><td rowspan="6"><b>Veiculo</b></td><td><code>id</code></td><td>Integer</td><td>gerado pelo banco</td></tr>
+    <tr><td><code>placa</code></td><td>String</td><td>obrigatório, único</td></tr>
+    <tr><td><code>marca</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>modelo</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>ano</code></td><td>Integer</td><td>opcional</td></tr>
+    <tr><td><code>cliente</code></td><td>Cliente</td><td>coluna <code>id_cliente</code></td></tr>
+    <tr><td rowspan="9"><b>OrdemServico</b></td><td><code>id</code></td><td>Integer</td><td>número da OS</td></tr>
+    <tr><td><code>veiculo</code></td><td>Veiculo</td><td>coluna <code>id_veiculo</code></td></tr>
+    <tr><td><code>usuario</code></td><td>Usuario</td><td>coluna <code>id_usuario</code>: quem abriu a OS</td></tr>
+    <tr><td><code>dataAbertura</code></td><td>LocalDate</td><td>preenchida automaticamente</td></tr>
+    <tr><td><code>dataConclusao</code></td><td>LocalDate</td><td>preenchida ao concluir</td></tr>
+    <tr><td><code>descricaoProblema</code></td><td>String</td><td>obrigatório</td></tr>
+    <tr><td><code>servicoRealizado</code></td><td>String</td><td>obrigatório para concluir</td></tr>
+    <tr><td><code>valorMaoObra</code></td><td>BigDecimal</td><td>não pode ser negativo</td></tr>
+    <tr><td><code>status</code></td><td>StatusOS (enum)</td><td><code>ABERTA</code>, <code>EM_ANDAMENTO</code>, <code>CONCLUIDA</code>, <code>CANCELADA</code></td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- 4 -->
+<h2 id="banco"><span class="num">4.</span>Banco de dados</h2>
+<p>Script para PostgreSQL. Rode na ordem: as tabelas referenciadas precisam existir antes das chaves estrangeiras.</p>
+<pre><code>CREATE TABLE usuario (
+    id         SERIAL PRIMARY KEY,
+    nome       VARCHAR(100) NOT NULL,
+    login      VARCHAR(30)  NOT NULL UNIQUE,
+    senha_hash CHAR(64)     NOT NULL,
+    perfil     VARCHAR(20)  NOT NULL DEFAULT 'ATENDENTE',
+    ativo      BOOLEAN      NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE cliente (
+    id       SERIAL PRIMARY KEY,
+    nome     VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20)  NOT NULL,
+    cpf      VARCHAR(14)  UNIQUE
+);
+
+CREATE TABLE veiculo (
+    id         SERIAL PRIMARY KEY,
+    placa      VARCHAR(8)  NOT NULL UNIQUE,
+    marca      VARCHAR(50) NOT NULL,
+    modelo     VARCHAR(50) NOT NULL,
+    ano        INTEGER,
+    id_cliente INTEGER NOT NULL REFERENCES cliente(id)
+);
+
+CREATE TABLE ordem_servico (
+    id                 SERIAL PRIMARY KEY,
+    id_veiculo         INTEGER NOT NULL REFERENCES veiculo(id),
+    id_usuario         INTEGER NOT NULL REFERENCES usuario(id),
+    data_abertura      DATE NOT NULL DEFAULT CURRENT_DATE,
+    data_conclusao     DATE,
+    descricao_problema VARCHAR(500) NOT NULL,
+    servico_realizado  VARCHAR(500),
+    valor_mao_obra     NUMERIC(10,2) NOT NULL DEFAULT 0,
+    status             VARCHAR(20) NOT NULL DEFAULT 'ABERTA'
+);
+
+-- Usuário inicial. Login: admin / Senha: admin123
+INSERT INTO usuario (nome, login, senha_hash, perfil)
+VALUES ('Administrador', 'admin',
+        '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN');</code></pre>
+<div class="nota"><b>Atenção:</b> troque a senha do <code>admin</code> no primeiro uso. Os dados de conexão (URL, usuário e senha do banco) não devem ficar escritos no código que vai para o Git: leia-os de um arquivo <code>banco.properties</code> listado no <code>.gitignore</code>.</div>
+
+<!-- 5 -->
+<h2 id="regras"><span class="num">5.</span>Regras de negócio</h2>
+<p>Todas ficam na camada <b>service</b>. A tela só chama a service e mostra a mensagem de erro com <code>JOptionPane</code>.</p>
+<div class="tabela">
+<table class="doc">
+  <thead><tr><th>Código</th><th>Regra</th></tr></thead>
+  <tbody>
+    <tr><td><b>RN01</b></td><td>Login e senha são obrigatórios na tela de login.</td></tr>
+    <tr><td><b>RN02</b></td><td>A senha nunca é gravada nem comparada em texto: o sistema calcula o SHA-256 da senha digitada e compara com <code>senha_hash</code>.</td></tr>
+    <tr><td><b>RN03</b></td><td>Usuário com <code>ativo = false</code> não entra no sistema.</td></tr>
+    <tr><td><b>RN04</b></td><td>Depois de 3 tentativas de login erradas seguidas, o sistema mostra uma mensagem e fecha.</td></tr>
+    <tr><td><b>RN05</b></td><td>A mensagem de login inválido é a mesma para usuário inexistente e senha errada (“Usuário ou senha inválidos.”).</td></tr>
+    <tr><td><b>RN06</b></td><td>Só usuários com perfil <code>ADMIN</code> acessam o cadastro de usuários. A senha do novo usuário tem no mínimo 6 caracteres e precisa ser digitada duas vezes iguais.</td></tr>
+    <tr><td><b>RN07</b></td><td>O usuário não pode desativar nem excluir a si mesmo.</td></tr>
+    <tr><td><b>RN08</b></td><td>Nome e telefone do cliente são obrigatórios.</td></tr>
+    <tr><td><b>RN09</b></td><td>A placa é única e segue o formato antigo (<code>ABC-1234</code>) ou Mercosul (<code>ABC1D23</code>).</td></tr>
+    <tr><td><b>RN10</b></td><td>Não é possível excluir um cliente que tenha veículos, nem um veículo que tenha OS.</td></tr>
+    <tr><td><b>RN11</b></td><td>A OS só pode ser aberta para um veículo cadastrado, e guarda o usuário logado em <code>id_usuario</code>.</td></tr>
+    <tr><td><b>RN12</b></td><td>Ao mudar a OS para <code>CONCLUIDA</code>, o sistema preenche <code>data_conclusao</code> com a data de hoje e exige o serviço realizado e o valor da mão de obra.</td></tr>
+    <tr><td><b>RN13</b></td><td>Uma OS <code>CONCLUIDA</code> ou <code>CANCELADA</code> não pode mais ser editada.</td></tr>
+    <tr><td><b>RN14</b></td><td>O valor da mão de obra não pode ser negativo.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Como calcular o SHA-256 em Java 8</h3>
+<p>Só a biblioteca padrão. O resultado em hexadecimal minúsculo é o que vai na coluna <code>senha_hash</code>.</p>
+<pre><code>import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public final class Criptografia {
+
+    public static String sha256(String texto) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(texto.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash) {
+                hex.append(String.format("%02x", b));
+            }
+            return hex.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 indisponível", e);
+        }
+    }
+}
+
+// Criptografia.sha256("admin123")
+// → 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9</code></pre>
+<p>O usuário logado fica guardado numa classe <code>Sessao</code> com um atributo <code>static</code>, para qualquer tela saber quem está usando o sistema:</p>
+<pre><code>public final class Sessao {
+    private static Usuario usuarioLogado;
+
+    public static void iniciar(Usuario usuario) { usuarioLogado = usuario; }
+    public static Usuario getUsuario()          { return usuarioLogado; }
+    public static boolean isAdmin()             { return usuarioLogado.getPerfil() == Perfil.ADMIN; }
+    public static void encerrar()               { usuarioLogado = null; }
+}</code></pre>
+<div class="nota"><b>Para discutir em sala:</b> SHA-256 puro é suficiente para aprender o conceito de não guardar senha em texto. Em sistemas reais usa-se um algoritmo lento e com <i>salt</i>, como bcrypt ou PBKDF2.</div>
+
+<!-- 6 -->
+<h2 id="telas"><span class="num">6.</span>Telas e protótipos</h2>
+<p>Os protótipos mostram a disposição dos componentes, não o visual exato. Os nomes de variáveis sugeridos seguem o prefixo do tipo (<code>txt</code>, <code>pwd</code>, <code>cbo</code>, <code>btn</code>, <code>tbl</code>), como no <code>gerenciacontato</code>.</p>
+
+<!-- T01 Login -->
+<h3 id="t01"><span class="tag">T01</span>Login</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 340px">
+    <div class="win-title"><span class="ico"></span><span class="t">Oficina – Entrar</span><span class="ctl"><i></i></span></div>
+    <div class="win-body">
+      <div class="lado" style="margin-bottom: 12px">
+        <div class="logo">O</div>
+        <div><b style="font-size: 15px">Oficina do Bairro</b><br><span style="color:#5b6875">Informe seu usuário e senha</span></div>
+      </div>
+      <div class="form">
+        <label>Usuário:</label><span class="in">admin</span>
+        <label>Senha:</label><span class="in">••••••••</span>
+      </div>
+      <div class="erro"><i>!</i>Usuário ou senha inválidos. Tentativa 1 de 3.</div>
+      <div class="botoes dir"><span class="btn def">Entrar</span><span class="btn">Sair</span></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JFrame</td><td><code>LoginGUI</code></td><td>centralizada, sem redimensionar, primeira tela do sistema</td></tr>
+    <tr><td>JTextField</td><td><code>txtLogin</code></td><td></td></tr>
+    <tr><td>JPasswordField</td><td><code>pwdSenha</code></td><td>ler com <code>getPassword()</code>, não <code>getText()</code></td></tr>
+    <tr><td>JLabel</td><td><code>lblMensagem</code></td><td>em vermelho, escondido até o primeiro erro</td></tr>
+    <tr><td>JButton</td><td><code>btnEntrar</code>, <code>btnSair</code></td><td><code>btnEntrar</code> é o botão padrão (Enter)</td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>Enter no campo de senha equivale a clicar em <b>Entrar</b> (<code>getRootPane().setDefaultButton(btnEntrar)</code>).</li>
+  <li>Login válido: grava o usuário em <code>Sessao</code>, abre a <a href="#t02">T02</a> e fecha esta janela (<code>dispose()</code>).</li>
+  <li>Login inválido: limpa a senha, mostra a mensagem com a tentativa atual (RN04, RN05).</li>
+</ul>
+
+<!-- T02 Principal -->
+<h3 id="t02"><span class="tag">T02</span>Tela principal</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 560px">
+    <div class="win-title"><span class="ico"></span><span class="t">Oficina do Bairro – Sistema de Oficina</span><span class="ctl"><i></i><i></i><i></i></span></div>
+    <div class="menubar"><span>Cadastros</span><span>Serviços</span><span class="aberto">Administração</span><span>Ajuda</span></div>
+    <div style="position: relative">
+      <div class="desktop">área de trabalho (imagem ou logotipo da oficina)</div>
+      <div style="position: absolute; top: 0; left: 150px; background: var(--win-field); border: 1px solid var(--win-border); box-shadow: 0 3px 8px rgba(0,0,0,.2); min-width: 150px">
+        <div style="padding: 4px 10px; background: var(--win-sel)">Usuários…</div>
+        <div style="border-top: 1px solid #e3e7eb; padding: 4px 10px">Trocar de usuário</div>
+      </div>
+    </div>
+    <div class="statusbar"><span>Usuário: <b>Administrador</b> (ADMIN)</span><span>02/10/2026</span></div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Menu</th><th>Itens</th><th>Abre</th></tr></thead>
+  <tbody>
+    <tr><td>Cadastros</td><td>Clientes · Veículos · Sair</td><td><a href="#t04">T04</a>, <a href="#t05">T05</a>, fecha o sistema</td></tr>
+    <tr><td>Serviços</td><td>Ordens de Serviço</td><td><a href="#t06">T06</a></td></tr>
+    <tr><td>Administração</td><td>Usuários · Trocar de usuário</td><td><a href="#t03">T03</a>, volta à <a href="#t01">T01</a></td></tr>
+    <tr><td>Ajuda</td><td>Sobre</td><td><a href="#t08">T08</a></td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li><code>JFrame</code> <code>TelaPrincipal</code> maximizada, com <code>JMenuBar</code> e uma barra de status (<code>JLabel lblUsuario</code>) mostrando quem está logado.</li>
+  <li>O item <b>Usuários</b> fica desabilitado quando <code>Sessao.isAdmin()</code> é falso (RN06).</li>
+  <li><b>Trocar de usuário</b> chama <code>Sessao.encerrar()</code>, fecha a tela principal e reabre o login.</li>
+</ul>
+
+<!-- T03 Usuários -->
+<h3 id="t03"><span class="tag">T03</span>Usuários <span style="font: 600 .8rem var(--f-body); color: var(--muted)">(só ADMIN)</span></h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 560px">
+    <div class="win-title"><span class="ico"></span><span class="t">Cadastro de Usuários</span><span class="ctl"><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="grupo"><span class="leg">Dados do usuário</span>
+        <div class="form">
+          <label>Nome:</label><span class="in">Carla Mendes</span>
+          <label>Login:</label><span class="in">carla</span>
+          <label>Senha:</label><span class="in">••••••</span>
+          <label>Confirmar senha:</label><span class="in">••••••</span>
+          <label>Perfil:</label><span class="in combo" style="max-width: 160px">ATENDENTE</span>
+          <span></span><span class="chk"><i>✓</i>Ativo</span>
+        </div>
+      </div>
+      <div class="botoes"><span class="btn">Novo</span><span class="btn def">Salvar</span><span class="btn">Excluir</span></div>
+      <div class="jtable"><table>
+        <thead><tr><th>ID</th><th>Nome</th><th>Login</th><th>Perfil</th><th>Ativo</th></tr></thead>
+        <tbody>
+          <tr><td class="r">1</td><td>Administrador</td><td>admin</td><td>ADMIN</td><td>Sim</td></tr>
+          <tr class="sel"><td class="r">2</td><td>Carla Mendes</td><td>carla</td><td>ATENDENTE</td><td>Sim</td></tr>
+          <tr><td class="r">3</td><td>Rogério Lima</td><td>rogerio</td><td>ATENDENTE</td><td>Não</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JTextField</td><td><code>txtNome</code>, <code>txtLogin</code></td><td></td></tr>
+    <tr><td>JPasswordField</td><td><code>pwdSenha</code>, <code>pwdConfirmacao</code></td><td>na edição, em branco = mantém a senha atual</td></tr>
+    <tr><td>JComboBox&lt;Perfil&gt;</td><td><code>cboPerfil</code></td><td>preenchido com <code>Perfil.values()</code></td></tr>
+    <tr><td>JCheckBox</td><td><code>chkAtivo</code></td><td></td></tr>
+    <tr><td>JTable</td><td><code>tblUsuarios</code></td><td>nunca mostra a senha nem o hash</td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>Clicar numa linha da tabela carrega o usuário no formulário para edição.</li>
+  <li>Salvar valida RN06 e RN07; ao gravar, a service converte a senha com <code>Criptografia.sha256</code>.</li>
+</ul>
+
+<!-- T04 Clientes -->
+<h3 id="t04"><span class="tag">T04</span>Clientes</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 560px">
+    <div class="win-title"><span class="ico"></span><span class="t">Cadastro de Clientes</span><span class="ctl"><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="grupo"><span class="leg">Dados do cliente</span>
+        <div class="form">
+          <label>Nome:</label><span class="in">João Pereira</span>
+          <label>Telefone:</label><span class="in" style="max-width: 200px">(11) 98765-4321</span>
+          <label>CPF:</label><span class="in" style="max-width: 200px">123.456.789-09</span>
+        </div>
+      </div>
+      <div class="botoes"><span class="btn">Novo</span><span class="btn def">Salvar</span><span class="btn">Excluir</span></div>
+      <div class="barra" style="margin-top: 10px"><span>Buscar:</span><span class="in vazio" style="flex: 1">nome do cliente</span></div>
+      <div class="jtable"><table>
+        <thead><tr><th>ID</th><th>Nome</th><th>Telefone</th><th>CPF</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="r">1</td><td>João Pereira</td><td>(11) 98765-4321</td><td>123.456.789-09</td></tr>
+          <tr><td class="r">2</td><td>Ana Souza</td><td>(11) 91234-5678</td><td></td></tr>
+          <tr><td class="r">3</td><td>Marcos Oliveira</td><td>(11) 99876-1122</td><td>987.654.321-00</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JTextField</td><td><code>txtNome</code>, <code>txtTelefone</code>, <code>txtCpf</code></td><td>extra: <code>JFormattedTextField</code> com máscara</td></tr>
+    <tr><td>JTextField</td><td><code>txtBusca</code></td><td>filtra a tabela a cada tecla (<code>KeyListener</code>)</td></tr>
+    <tr><td>JTable</td><td><code>tblClientes</code></td><td></td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>Mesmo funcionamento do <code>gerenciacontato</code>: Novo limpa o formulário, Salvar inclui ou altera, Excluir pede confirmação.</li>
+  <li>Excluir cliente com veículos mostra o erro da RN10.</li>
+</ul>
+
+<!-- T05 Veículos -->
+<h3 id="t05"><span class="tag">T05</span>Veículos</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 560px">
+    <div class="win-title"><span class="ico"></span><span class="t">Cadastro de Veículos</span><span class="ctl"><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="grupo"><span class="leg">Dados do veículo</span>
+        <div class="form">
+          <label>Dono:</label><span class="in combo">João Pereira</span>
+          <label>Placa:</label><span class="in" style="max-width: 120px">ABC1D23</span>
+          <label>Marca:</label><span class="in" style="max-width: 220px">Volkswagen</span>
+          <label>Modelo:</label><span class="in" style="max-width: 220px">Gol 1.0</span>
+          <label>Ano:</label><span class="in" style="max-width: 80px">2015</span>
+        </div>
+      </div>
+      <div class="botoes"><span class="btn">Novo</span><span class="btn def">Salvar</span><span class="btn">Excluir</span></div>
+      <div class="jtable"><table>
+        <thead><tr><th>ID</th><th>Placa</th><th>Marca</th><th>Modelo</th><th>Ano</th><th>Dono</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="r">1</td><td>ABC1D23</td><td>Volkswagen</td><td>Gol 1.0</td><td class="r">2015</td><td>João Pereira</td></tr>
+          <tr><td class="r">2</td><td>FGH-4567</td><td>Fiat</td><td>Uno Mille</td><td class="r">2009</td><td>Ana Souza</td></tr>
+          <tr><td class="r">3</td><td>JKL2M34</td><td>Chevrolet</td><td>Onix</td><td class="r">2020</td><td>João Pereira</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JComboBox&lt;Cliente&gt;</td><td><code>cboCliente</code></td><td>carregado com <code>clienteService.listar()</code></td></tr>
+    <tr><td>JTextField</td><td><code>txtPlaca</code>, <code>txtMarca</code>, <code>txtModelo</code>, <code>txtAno</code></td><td>placa sempre em maiúsculas</td></tr>
+    <tr><td>JTable</td><td><code>tblVeiculos</code></td><td>coluna Dono vem do <code>JOIN</code> com <code>cliente</code></td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>O <code>toString()</code> de <code>Cliente</code> devolve o nome. Assim o combo guarda o <b>objeto</b> e <code>(Cliente) cboCliente.getSelectedItem()</code> já entrega o id para <code>id_cliente</code>.</li>
+  <li>Placa repetida ou fora do formato mostra o erro da RN09.</li>
+</ul>
+<pre><code>SELECT v.id, v.placa, v.marca, v.modelo, v.ano, c.id AS id_cliente, c.nome AS nome_cliente
+  FROM veiculo v
+  JOIN cliente c ON c.id = v.id_cliente
+ ORDER BY v.placa;</code></pre>
+
+<!-- T06 Ordens de serviço -->
+<h3 id="t06"><span class="tag">T06</span>Ordens de serviço</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 640px">
+    <div class="win-title"><span class="ico"></span><span class="t">Ordens de Serviço</span><span class="ctl"><i></i><i></i></span></div>
+    <div class="win-body">
+      <div class="barra"><span>Status:</span><span class="in combo" style="width: 150px">Todas</span><span>Placa:</span><span class="in vazio" style="width: 110px">ABC1D23</span><span class="btn">Filtrar</span></div>
+      <div class="jtable"><table>
+        <thead><tr><th>Nº</th><th>Abertura</th><th>Veículo</th><th>Cliente</th><th>Status</th><th>Valor (R$)</th><th>Aberta por</th></tr></thead>
+        <tbody>
+          <tr><td class="r">1</td><td>25/09/2026</td><td>FGH-4567 Uno</td><td>Ana Souza</td><td><span class="st co">CONCLUÍDA</span></td><td class="r">380,00</td><td>carla</td></tr>
+          <tr class="sel"><td class="r">2</td><td>30/09/2026</td><td>ABC1D23 Gol</td><td>João Pereira</td><td><span class="st and">EM ANDAMENTO</span></td><td class="r">250,00</td><td>admin</td></tr>
+          <tr><td class="r">3</td><td>01/10/2026</td><td>JKL2M34 Onix</td><td>João Pereira</td><td><span class="st ab">ABERTA</span></td><td class="r">0,00</td><td>carla</td></tr>
+          <tr><td class="r">4</td><td>01/10/2026</td><td>FGH-4567 Uno</td><td>Ana Souza</td><td><span class="st ca">CANCELADA</span></td><td class="r">0,00</td><td>admin</td></tr>
+        </tbody>
+      </table></div>
+      <div class="botoes"><span class="btn def">Nova OS</span><span class="btn">Editar</span><span class="btn">Fechar</span></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JComboBox&lt;String&gt;</td><td><code>cboFiltroStatus</code></td><td>“Todas” + os valores de <code>StatusOS</code></td></tr>
+    <tr><td>JTextField</td><td><code>txtFiltroPlaca</code></td><td>opcional</td></tr>
+    <tr><td>JTable</td><td><code>tblOrdens</code></td><td><code>JOIN</code> de <code>ordem_servico</code>, <code>veiculo</code>, <code>cliente</code> e <code>usuario</code></td></tr>
+    <tr><td>JButton</td><td><code>btnNova</code>, <code>btnEditar</code>, <code>btnFechar</code></td><td>Nova e Editar abrem a <a href="#t07">T07</a></td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>Duplo clique numa linha equivale a <b>Editar</b>.</li>
+  <li>Ao fechar a <a href="#t07">T07</a> com Salvar, a tabela é recarregada.</li>
+  <li>A cor por status é um extra (<code>TableCellRenderer</code>); sem ele, a coluna mostra só o texto.</li>
+</ul>
+
+<!-- T07 Dialog OS -->
+<h3 id="t07"><span class="tag">T07</span>Abrir / editar OS</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 480px">
+    <div class="win-title"><span class="ico"></span><span class="t">Ordem de Serviço nº 2</span><span class="ctl"><i></i></span></div>
+    <div class="win-body">
+      <div class="form">
+        <label>Veículo:</label><span class="in combo">ABC1D23 – Gol 1.0 (João Pereira)</span>
+        <label>Abertura:</label><span class="in ro" style="max-width: 110px">30/09/2026</span>
+        <label>Aberta por:</label><span class="in ro" style="max-width: 160px">Administrador</span>
+        <label>Problema:</label><span class="in area">Barulho na suspensão dianteira ao passar em lombadas.</span>
+        <label>Serviço realizado:</label><span class="in area">Troca das buchas da bandeja dianteira.</span>
+        <label>Mão de obra (R$):</label><span class="in" style="max-width: 110px; text-align: right">250,00</span>
+        <label>Status:</label><span class="in combo" style="max-width: 170px">EM_ANDAMENTO</span>
+      </div>
+      <div class="botoes dir"><span class="btn def">Salvar</span><span class="btn">Cancelar</span></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Componente</th><th>Nome</th><th>Observação</th></tr></thead>
+  <tbody>
+    <tr><td>JDialog (modal)</td><td><code>OrdemServicoDialog</code></td><td>bloqueia a T06 enquanto aberto</td></tr>
+    <tr><td>JComboBox&lt;Veiculo&gt;</td><td><code>cboVeiculo</code></td><td><code>toString()</code>: “placa – modelo (dono)”</td></tr>
+    <tr><td>JTextField</td><td><code>txtAbertura</code>, <code>txtUsuario</code></td><td>somente leitura</td></tr>
+    <tr><td>JTextArea</td><td><code>txtProblema</code>, <code>txtServico</code></td><td>dentro de <code>JScrollPane</code>, com quebra de linha</td></tr>
+    <tr><td>JTextField</td><td><code>txtValor</code></td><td>convertido para <code>BigDecimal</code></td></tr>
+    <tr><td>JComboBox&lt;StatusOS&gt;</td><td><code>cboStatus</code></td><td>na OS nova, fica fixo em <code>ABERTA</code></td></tr>
+  </tbody>
+</table></div>
+<ul class="comportamento">
+  <li>OS nova: abertura = hoje, aberta por = <code>Sessao.getUsuario()</code> (RN11).</li>
+  <li>OS <code>CONCLUIDA</code> ou <code>CANCELADA</code>: todos os campos desabilitados e o botão Salvar escondido (RN13).</li>
+  <li>Mudar para <code>CONCLUIDA</code> sem serviço ou valor mostra o erro da RN12.</li>
+</ul>
+
+<!-- T08 Sobre -->
+<h3 id="t08"><span class="tag">T08</span>Sobre</h3>
+<div class="bancada"><div class="bancada-centro">
+  <div class="win" style="width: 360px">
+    <div class="win-title"><span class="ico"></span><span class="t">Sobre</span><span class="ctl"><i></i></span></div>
+    <div class="win-body">
+      <div class="lado">
+        <div class="logo">O</div>
+        <div><b style="font-size: 15px">Sistema de Oficina</b><br>Versão 1.0<br><span style="color:#5b6875">Projeto da turma de Java · 2026</span><br><span style="color:#5b6875">Alunos: nomes do grupo</span></div>
+      </div>
+      <div class="botoes dir"><span class="btn def">OK</span></div>
+    </div>
+  </div>
+</div></div>
+<ul class="comportamento">
+  <li><code>JDialog</code> modal <code>SobreGUI</code>, igual ao do <code>gerenciacontato</code>.</li>
+</ul>
+
+<!-- 7 -->
+<h2 id="estrutura"><span class="num">7.</span>Estrutura do projeto</h2>
+<pre><code>oficina/
+└── src/oficina/
+    ├── Main.java                  abre a LoginGUI
+    ├── config/   Banco.java       lê banco.properties
+    ├── model/    Usuario, Perfil (enum), Cliente, Veiculo, OrdemServico, StatusOS (enum)
+    ├── dao/      UsuarioDAO, ClienteDAO, VeiculoDAO, OrdemServicoDAO
+    ├── service/  AutenticacaoService, UsuarioService, ClienteService,
+    │             VeiculoService, OrdemServicoService        ← regras de negócio
+    ├── util/     Criptografia, Sessao
+    └── gui/      LoginGUI, TelaPrincipal, UsuarioGUI, ClienteGUI, VeiculoGUI,
+                  OrdemServicoGUI, OrdemServicoDialog, SobreGUI</code></pre>
+<p><code>AutenticacaoService.entrar(login, senha)</code> busca o usuário pelo login (<code>UsuarioDAO.buscarPorLogin</code>), compara o hash, verifica se está ativo e devolve o <code>Usuario</code> ou lança uma exceção com a mensagem da RN05.</p>
+
+<!-- 8 -->
+<h2 id="roteiro"><span class="num">8.</span>Roteiro das aulas</h2>
+<div class="tabela"><table class="doc">
+  <thead><tr><th>Aula</th><th>Tema</th><th>Entrega</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col">1</td><td>Modelagem</td><td>Diagrama no quadro, script SQL, classes model e os <code>enum</code> <code>Perfil</code> e <code>StatusOS</code></td></tr>
+    <tr><td class="num-col">2</td><td>Login</td><td><code>Criptografia</code>, <code>UsuarioDAO.buscarPorLogin</code>, <code>AutenticacaoService</code>, <code>Sessao</code> e a <a href="#t01">T01</a> (RN01–RN05)</td></tr>
+    <tr><td class="num-col">3</td><td>Tela principal e usuários</td><td><a href="#t02">T02</a> com menu e barra de status; <a href="#t03">T03</a> com controle por perfil (RN06, RN07)</td></tr>
+    <tr><td class="num-col">4</td><td>Clientes</td><td><a href="#t04">T04</a> completa, revisando o padrão do <code>gerenciacontato</code> (RN08)</td></tr>
+    <tr><td class="num-col">5</td><td>Veículos</td><td>Chave estrangeira, <code>JComboBox</code> de clientes, <code>JOIN</code> e a <a href="#t05">T05</a> (RN09, RN10)</td></tr>
+    <tr><td class="num-col">6</td><td>Ordens de serviço</td><td><a href="#t06">T06</a> e o <code>JDialog</code> <a href="#t07">T07</a> (RN11–RN14)</td></tr>
+    <tr><td class="num-col">7</td><td>Fechamento</td><td>Filtros, <a href="#t08">T08</a>, testes manuais guiados pelas regras e extras</td></tr>
+  </tbody>
+</table></div>
+
+<!-- 9 -->
+<h2 id="extras"><span class="num">9.</span>Extras (para quem terminar antes)</h2>
+<ul>
+  <li>Cor na linha da <a href="#t06">T06</a> conforme o status, com <code>TableCellRenderer</code>.</li>
+  <li><code>JFormattedTextField</code> com máscara para telefone, CPF e placa.</li>
+  <li>Tela “Alterar minha senha”, pedindo a senha atual.</li>
+  <li>Total faturado no mês (soma das OS concluídas), mostrado na barra de status.</li>
+  <li>Histórico do veículo: todas as OS de uma placa.</li>
+  <li>Tabela <code>item_os</code> (<code>id_ordem_servico</code>, descrição, quantidade, valor) para peças; total da OS = mão de obra + peças.</li>
+</ul>
+
+<!-- 10 -->
+<h2 id="avaliacao"><span class="num">10.</span>Critérios de avaliação</h2>
+<ul class="check">
+  <li>Login funciona com senha em hash, perfil e limite de tentativas (RN01–RN05).</li>
+  <li>Cadastro de usuários acessível só para <code>ADMIN</code> (RN06, RN07).</li>
+  <li>Clientes, veículos e OS com incluir, listar, editar e excluir.</li>
+  <li>Chaves estrangeiras no padrão <code>id_&lt;tabela&gt;</code> e <code>JOIN</code> nas listagens de veículos e OS.</li>
+  <li>Regras de negócio na camada service, não na tela.</li>
+  <li>Mensagens de erro claras com <code>JOptionPane</code>.</li>
+  <li>Código organizado nas pastas da seção 7.</li>
+  <li>Pelo menos um extra (ponto adicional).</li>
+</ul>
+
+<footer>Curso de Programação Java · Projeto Sistema de Oficina · especificação v1.0</footer>
+</div>
+
+</body></html>
