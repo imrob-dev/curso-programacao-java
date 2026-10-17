@@ -1,0 +1,10 @@
+<!-- Regenera o updates.xml a partir dos .nbm desta pasta (usa o Ant e o harness do NetBeans 8.0.2). -->
+<project name="gerar-updates" default="gerar" basedir=".">
+    <property name="netbeans.home" value="C:/Program Files/NetBeans 8.0.2"/>
+    <taskdef name="makeupdatedesc" classname="org.netbeans.nbbuild.MakeUpdateDesc" classpath="${netbeans.home}/harness/tasks.jar"/>
+    <target name="gerar">
+        <makeupdatedesc desc="${basedir}/updates.xml" distbase="." automaticgrouping="true" uselicenseurl="false">
+            <fileset dir="${basedir}" includes="**/*.nbm"/>
+        </makeupdatedesc>
+    </target>
+</project>

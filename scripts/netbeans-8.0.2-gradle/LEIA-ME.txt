@@ -1,0 +1,20 @@
+Suporte a Gradle para NetBeans 8.0.2 (plugin 1.4.7 - Gradle 8.14.5 / JUnit 5)
+=============================================================================
+
+Instalação (uma vez só):
+
+1. NetBeans > Tools > Plugins > aba "Settings" > botão "Add".
+   Name: Gradle local
+   URL:  file:///C:/Users/Rob/Downloads/netbeans-8.0.2-gradle/updates.xml
+   (se mover esta pasta, ajuste a URL para o novo caminho do updates.xml)
+
+2. Aba "Available Plugins" > marque "Gradle Support" > Install.
+   O NetBeans instala junto, sozinho, o Groovy e o JUnit 4 desta pasta.
+
+3. Nos avisos de plugin não assinado, clique em "Continue". Reinicie o NetBeans.
+
+Atualizar o plugin no futuro: troque o .nbm em 3-gradle e regenere o updates.xml com
+  "C:\Program Files\NetBeans 8.0.2\extide\ant\bin\ant.bat" -f gerar-updates.xml
+(com JAVA_HOME apontando para o JDK 8); depois use a aba "Updates" do Tools > Plugins.
+
+Não apague as subpastas 1-groovy, 2-junit e 3-gradle: o updates.xml aponta para elas.

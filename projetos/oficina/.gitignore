@@ -1,0 +1,15 @@
+# Segredos e chaves
+.env
+*.env
+*.properties.local
+
+# Gradle e Build
+.gradle/
+build/
+
+# IDE NetBeans e Eclipse
+nbproject/private/
+.nb-gradle/
+.settings/
+.project
+.classpath

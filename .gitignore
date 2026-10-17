@@ -5,6 +5,7 @@
 build/
 out/
 bin/
+.gradle/
 
 # Arquivos de IDE
 .idea/
@@ -12,3 +13,7 @@ bin/
 .vscode/
 nbproject/private/
 /projetos/oficina/.nb-gradle/
+
+# Variaveis de ambiente e segredos
+.env
+*.env
