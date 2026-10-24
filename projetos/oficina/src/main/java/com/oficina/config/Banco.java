@@ -213,7 +213,7 @@ public class Banco {
                     + "    data_abertura      DATE NOT NULL DEFAULT CURRENT_DATE,"
                     + "    data_conclusao     DATE,"
                     + "    descricao_problema VARCHAR(500) NOT NULL,"
-                    + "    servico_realizado  VARCHAR(500),
+                    + "    servico_realizado  VARCHAR(500),"
                     + "    valor_mao_obra     NUMERIC(10,2) NOT NULL DEFAULT 0,"
                     + "    status             VARCHAR(20) NOT NULL DEFAULT 'ABERTA'"
                     + ")");
