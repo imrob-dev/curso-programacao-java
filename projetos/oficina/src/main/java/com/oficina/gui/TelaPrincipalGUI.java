@@ -5,11 +5,17 @@
  */
 package com.oficina.gui;
 
+import com.oficina.model.Usuario;
+import com.oficina.util.Sessao;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
+ * Tela principal do sistema de Oficina Mecânica (T02).
  *
  * @author Rob
  */
@@ -22,6 +28,30 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
      */
     public TelaPrincipalGUI() {
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        atualizarSessaoEData();
+    }
+
+    /**
+     * Atualiza a barra de status com os dados do usuário autenticado e data atual,
+     * além de aplicar o controle de acesso nos menus (RN06).
+     */
+    public void atualizarSessaoEData() {
+        // Data atual
+        LocalDate hoje = LocalDate.now();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        lblData.setText(hoje.format(fmt));
+
+        // Dados do usuário na Sessão
+        Usuario usuario = Sessao.getUsuario();
+        if (usuario != null) {
+            lblUsuario.setText("<html>Usuário: <b>" + usuario.getNome() + "</b> (" + usuario.getPerfil() + ")</html>");
+        } else {
+            lblUsuario.setText("<html>Usuário: <b>Administrador</b> (ADMIN)</html>");
+        }
+
+        // RN06: Menu Usuários habilitado apenas para perfil ADMIN
+        mnUsuario.setEnabled(Sessao.isAdmin());
     }
 
     /**
@@ -34,92 +64,138 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         desktop = new javax.swing.JDesktopPane();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        pnlStatus = new javax.swing.JPanel();
+        lblUsuario = new javax.swing.JLabel();
+        lblData = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuCadastros = new javax.swing.JMenu();
         mnCliente = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        mnVeiculo = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        mnSair = new javax.swing.JMenuItem();
+        menuServicos = new javax.swing.JMenu();
+        mnOS = new javax.swing.JMenuItem();
+        menuAdministracao = new javax.swing.JMenu();
         mnUsuario = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        mnTrocarUsuario = new javax.swing.JMenuItem();
+        menuAjuda = new javax.swing.JMenu();
+        mnSobre = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("Usuario:");
-
-        jLabel2.setText("Administrador");
-
-        jLabel3.setText("03/10/2026");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 451, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        setTitle("Oficina do Bairro – Sistema de Oficina");
 
         javax.swing.GroupLayout desktopLayout = new javax.swing.GroupLayout(desktop);
         desktop.setLayout(desktopLayout);
         desktopLayout.setHorizontalGroup(
             desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         desktopLayout.setVerticalGroup(
             desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, desktopLayout.createSequentialGroup()
-                .addGap(0, 449, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(0, 500, Short.MAX_VALUE)
         );
-        desktop.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        jMenu1.setText("Cadastro");
+        pnlStatus.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        mnCliente.setText("Cliente");
+        lblUsuario.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblUsuario.setText("Usuário: Administrador (ADMIN)");
+
+        lblData.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblData.setText("00/00/0000");
+
+        javax.swing.GroupLayout pnlStatusLayout = new javax.swing.GroupLayout(pnlStatus);
+        pnlStatus.setLayout(pnlStatusLayout);
+        pnlStatusLayout.setHorizontalGroup(
+            pnlStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStatusLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblUsuario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 500, Short.MAX_VALUE)
+                .addComponent(lblData)
+                .addContainerGap())
+        );
+        pnlStatusLayout.setVerticalGroup(
+            pnlStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStatusLayout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addGroup(pnlStatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUsuario)
+                    .addComponent(lblData))
+                .addGap(4, 4, 4))
+        );
+
+        menuCadastros.setText("Cadastros");
+
+        mnCliente.setText("Clientes");
         mnCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnClienteActionPerformed(evt);
             }
         });
-        jMenu1.add(mnCliente);
+        menuCadastros.add(mnCliente);
 
-        jMenuBar1.add(jMenu1);
+        mnVeiculo.setText("Veículos");
+        mnVeiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnVeiculoActionPerformed(evt);
+            }
+        });
+        menuCadastros.add(mnVeiculo);
+        menuCadastros.add(jSeparator1);
 
-        jMenu2.setText("Serviços");
-        jMenuBar1.add(jMenu2);
+        mnSair.setText("Sair");
+        mnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnSairActionPerformed(evt);
+            }
+        });
+        menuCadastros.add(mnSair);
 
-        jMenu3.setText("Administração");
+        jMenuBar1.add(menuCadastros);
 
-        mnUsuario.setText("Usuario");
-        jMenu3.add(mnUsuario);
+        menuServicos.setText("Serviços");
 
-        jMenuItem1.setText("Trocar Usuário");
-        jMenu3.add(jMenuItem1);
+        mnOS.setText("Ordens de Serviço");
+        mnOS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnOSActionPerformed(evt);
+            }
+        });
+        menuServicos.add(mnOS);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(menuServicos);
 
-        jMenu4.setText("Ajuda");
-        jMenuBar1.add(jMenu4);
+        menuAdministracao.setText("Administração");
+
+        mnUsuario.setText("Usuários…");
+        mnUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnUsuarioActionPerformed(evt);
+            }
+        });
+        menuAdministracao.add(mnUsuario);
+
+        mnTrocarUsuario.setText("Trocar de Usuário");
+        mnTrocarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnTrocarUsuarioActionPerformed(evt);
+            }
+        });
+        menuAdministracao.add(mnTrocarUsuario);
+
+        jMenuBar1.add(menuAdministracao);
+
+        menuAjuda.setText("Ajuda");
+
+        mnSobre.setText("Sobre");
+        mnSobre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnSobreActionPerformed(evt);
+            }
+        });
+        menuAjuda.add(mnSobre);
+
+        jMenuBar1.add(menuAjuda);
 
         setJMenuBar(jMenuBar1);
 
@@ -128,10 +204,14 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(desktop)
+            .addComponent(pnlStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(desktop)
+                .addGap(0, 0, 0)
+                .addComponent(pnlStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -139,33 +219,73 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
 
     private void mnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnClienteActionPerformed
         if (telaClientes == null || telaClientes.isClosed()) {
-            telaClientes = new ClienteGUI();     // ainda não existe (ou foi fechada): cria
+            telaClientes = new ClienteGUI();
             abrirJanela(telaClientes);
         } else {
-            trazerParaFrente(telaClientes);      // já está aberta: só mostra
+            trazerParaFrente(telaClientes);
         }
     }//GEN-LAST:event_mnClienteActionPerformed
 
-    private void abrirJanela(JInternalFrame janela) {
-        desktop.add(janela);                         // 1. coloca na área de trabalho
+    private void mnVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnVeiculoActionPerformed
+        JOptionPane.showMessageDialog(this,
+                "Módulo de Veículos em desenvolvimento (T05).",
+                "Veículos",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_mnVeiculoActionPerformed
 
-        Dimension area = desktop.getSize();          // 2. centraliza
+    private void mnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnSairActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_mnSairActionPerformed
+
+    private void mnOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnOSActionPerformed
+        JOptionPane.showMessageDialog(this,
+                "Módulo de Ordens de Serviço em desenvolvimento (T06).",
+                "Ordens de Serviço",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_mnOSActionPerformed
+
+    private void mnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnUsuarioActionPerformed
+        JOptionPane.showMessageDialog(this,
+                "Módulo de Cadastro de Usuários em desenvolvimento (T03).",
+                "Usuários",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_mnUsuarioActionPerformed
+
+    private void mnTrocarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnTrocarUsuarioActionPerformed
+        Sessao.encerrar();
+        new LoginGUI().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_mnTrocarUsuarioActionPerformed
+
+    private void mnSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnSobreActionPerformed
+        JOptionPane.showMessageDialog(this,
+                "Oficina do Bairro – Sistema de Gestão de Oficina Mecânica\n"
+                + "Versão 1.0\n"
+                + "Desenvolvido durante o Curso de Programação Java",
+                "Sobre",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_mnSobreActionPerformed
+
+    private void abrirJanela(JInternalFrame janela) {
+        desktop.add(janela);
+
+        Dimension area = desktop.getSize();
         Dimension tamanho = janela.getSize();
         janela.setLocation(Math.max(0, (area.width - tamanho.width) / 2),
                 Math.max(0, (area.height - tamanho.height) / 2));
 
-        janela.setVisible(true);                     // 3. mostra (JInternalFrame começa invisível!)
+        janela.setVisible(true);
         trazerParaFrente(janela);
     }
 
     private void trazerParaFrente(JInternalFrame janela) {
         try {
             if (janela.isIcon()) {
-                janela.setIcon(false);               // se estava minimizada, restaura
+                janela.setIcon(false);
             }
-            janela.setSelected(true);                // dá o foco
+            janela.setSelected(true);
         } catch (PropertyVetoException ex) {
-            // a janela recusou a seleção; não há o que fazer
+            // Janela recusou seleção
         }
         janela.toFront();
     }
@@ -207,17 +327,21 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktop;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JLabel lblData;
+    private javax.swing.JLabel lblUsuario;
+    private javax.swing.JMenu menuAdministracao;
+    private javax.swing.JMenu menuAjuda;
+    private javax.swing.JMenu menuCadastros;
+    private javax.swing.JMenu menuServicos;
     private javax.swing.JMenuItem mnCliente;
+    private javax.swing.JMenuItem mnOS;
+    private javax.swing.JMenuItem mnSair;
+    private javax.swing.JMenuItem mnSobre;
+    private javax.swing.JMenuItem mnTrocarUsuario;
     private javax.swing.JMenuItem mnUsuario;
+    private javax.swing.JMenuItem mnVeiculo;
+    private javax.swing.JPanel pnlStatus;
     // End of variables declaration//GEN-END:variables
 }

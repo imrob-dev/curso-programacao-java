@@ -207,13 +207,28 @@ public class LoginGUI extends javax.swing.JFrame {
                 if (rs.next()) {
                     boolean ativo = rs.getBoolean("ativo");
                     // RN03: Usuário inativo não entra no sistema
-                    return ativo;
+                    if (ativo) {
+                        int id = rs.getInt("id");
+                        String nome = rs.getString("nome");
+                        String perfilStr = rs.getString("perfil");
+                        com.oficina.model.Perfil perfil = "ADMIN".equalsIgnoreCase(perfilStr)
+                                ? com.oficina.model.Perfil.ADMIN
+                                : com.oficina.model.Perfil.ATENDENTE;
+                        com.oficina.model.Usuario u = new com.oficina.model.Usuario(id, nome, login, perfil, true);
+                        com.oficina.util.Sessao.iniciar(u);
+                        return true;
+                    }
+                    return false;
                 }
             }
         } catch (Exception ex) {
             System.err.println("Aviso na autenticação via banco: " + ex.getMessage());
             // Fallback de contingência caso o banco esteja inacessível
-            return "admin".equalsIgnoreCase(login) && "admin123".equals(senha);
+            if ("admin".equalsIgnoreCase(login) && "admin123".equals(senha)) {
+                com.oficina.model.Usuario u = new com.oficina.model.Usuario(1, "Administrador", "admin", com.oficina.model.Perfil.ADMIN, true);
+                com.oficina.util.Sessao.iniciar(u);
+                return true;
+            }
         }
         return false;
     }
