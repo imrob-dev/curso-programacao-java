@@ -31,6 +31,7 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
      */
     public TelaPrincipalGUI() {
         initComponents();
+        com.oficina.util.IconeUtil.aplicarIcone(this);
         setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         atualizarSessaoEData();
     }
@@ -66,7 +67,29 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        desktop = new javax.swing.JDesktopPane();
+        desktop = new javax.swing.JDesktopPane() {
+            private final java.awt.Image imgLogo = com.oficina.util.IconeUtil.getLogo();
+
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                if (imgLogo != null) {
+                    int w = getWidth();
+                    int h = getHeight();
+                    int imgW = imgLogo.getWidth(this);
+                    int imgH = imgLogo.getHeight(this);
+                    if (imgW > 0 && imgH > 0) {
+                        double scale = Math.min((double) (w * 0.70) / imgW, (double) (h * 0.70) / imgH);
+                        if (scale > 1.0) scale = 1.0;
+                        int targetW = (int) (imgW * scale);
+                        int targetH = (int) (imgH * scale);
+                        int x = (w - targetW) / 2;
+                        int y = (h - targetH) / 2;
+                        g.drawImage(imgLogo, x, y, targetW, targetH, this);
+                    }
+                }
+            }
+        };
         pnlStatus = new javax.swing.JPanel();
         lblUsuario = new javax.swing.JLabel();
         lblData = new javax.swing.JLabel();
@@ -86,6 +109,8 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Oficina do Bairro – Sistema de Oficina");
+
+        desktop.setBackground(new java.awt.Color(3, 3, 3));
 
         javax.swing.GroupLayout desktopLayout = new javax.swing.GroupLayout(desktop);
         desktop.setLayout(desktopLayout);

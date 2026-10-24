@@ -19,8 +19,51 @@ public class LoginGUI extends javax.swing.JFrame {
      * Creates new form LoginGUI
      */
     public LoginGUI() {
+        setContentPane(new javax.swing.JPanel() {
+            private final java.awt.Image imgLogo = com.oficina.util.IconeUtil.getLogo();
+
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                g.setColor(new java.awt.Color(3, 3, 3));
+                g.fillRect(0, 0, getWidth(), getHeight());
+                if (imgLogo != null) {
+                    java.awt.Graphics2D g2d = (java.awt.Graphics2D) g.create();
+                    g2d.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.22f));
+                    int w = getWidth();
+                    int h = getHeight();
+                    int imgW = imgLogo.getWidth(this);
+                    int imgH = imgLogo.getHeight(this);
+                    if (imgW > 0 && imgH > 0) {
+                        double scale = Math.min((double) (w * 0.90) / imgW, (double) (h * 0.90) / imgH);
+                        int targetW = (int) (imgW * scale);
+                        int targetH = (int) (imgH * scale);
+                        int x = (w - targetW) / 2;
+                        int y = (h - targetH) / 2;
+                        g2d.drawImage(imgLogo, x, y, targetW, targetH, this);
+                    }
+                    g2d.dispose();
+                }
+            }
+        });
         initComponents();
+        com.oficina.util.IconeUtil.aplicarIcone(this);
+        customizarEstilo();
         getRootPane().setDefaultButton(btnEntrar);
+    }
+
+    private void customizarEstilo() {
+        getContentPane().setBackground(new java.awt.Color(3, 3, 3));
+        lblTitulo.setForeground(java.awt.Color.WHITE);
+        lblSubtitulo.setForeground(new java.awt.Color(190, 190, 190));
+        lblLogin.setForeground(java.awt.Color.WHITE);
+        lblSenha.setForeground(java.awt.Color.WHITE);
+        lblLogo.setOpaque(false);
+        lblLogo.setText("");
+        java.awt.Image icone = com.oficina.util.IconeUtil.getIcone48();
+        if (icone != null) {
+            lblLogo.setIcon(new javax.swing.ImageIcon(icone));
+        }
     }
 
     /**
@@ -47,26 +90,25 @@ public class LoginGUI extends javax.swing.JFrame {
         setTitle("Oficina – Entrar");
         setResizable(false);
 
-        lblLogo.setBackground(new java.awt.Color(201, 127, 34));
-        lblLogo.setFont(new java.awt.Font("Tahoma", 1, 26)); // NOI18N
-        lblLogo.setForeground(new java.awt.Color(255, 255, 255));
         lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogo.setText("O");
-        lblLogo.setOpaque(true);
+        lblLogo.setOpaque(false);
 
         lblTitulo.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
         lblTitulo.setText("Oficina do Bairro");
 
         lblSubtitulo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblSubtitulo.setForeground(new java.awt.Color(91, 104, 117));
+        lblSubtitulo.setForeground(new java.awt.Color(190, 190, 190));
         lblSubtitulo.setText("Informe seu usuário e senha");
 
         lblLogin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblLogin.setForeground(new java.awt.Color(255, 255, 255));
         lblLogin.setText("Usuário:");
 
         txtLogin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
         lblSenha.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblSenha.setForeground(new java.awt.Color(255, 255, 255));
         lblSenha.setText("Senha:");
 
         pwdSenha.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N

@@ -18,6 +18,13 @@ public class SobreGUI extends javax.swing.JDialog {
     public SobreGUI(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        com.oficina.util.IconeUtil.aplicarIcone(this);
+        java.awt.Image icone = com.oficina.util.IconeUtil.getIcone48();
+        if (icone != null) {
+            lblLogo.setOpaque(false);
+            lblLogo.setText("");
+            lblLogo.setIcon(new javax.swing.ImageIcon(icone));
+        }
         getRootPane().setDefaultButton(btnOk);
     }
 

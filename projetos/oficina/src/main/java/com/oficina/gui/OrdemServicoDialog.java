@@ -48,6 +48,8 @@ public class OrdemServicoDialog extends javax.swing.JDialog {
         this.ordemServicoService = new OrdemServicoService();
         this.veiculoService = new VeiculoService();
         initComponents();
+        com.oficina.util.IconeUtil.aplicarIcone(this);
+        com.oficina.util.MascaraMonetaria.aplicar(txtValor);
         getRootPane().setDefaultButton(btnSalvar);
         carregarVeiculos();
         configurarDados(os);
@@ -88,7 +90,7 @@ public class OrdemServicoDialog extends javax.swing.JDialog {
             statusModel.addElement(StatusOS.ABERTA);
             cboStatus.setModel(statusModel);
             cboStatus.setEnabled(false); // Nova OS é fixa em ABERTA (RN11)
-            txtValor.setText("0,00");
+            com.oficina.util.MascaraMonetaria.setValor(txtValor, BigDecimal.ZERO);
         } else {
             this.ordemServico = os;
             setTitle("Ordem de Serviço nº " + os.getId());
@@ -110,7 +112,7 @@ public class OrdemServicoDialog extends javax.swing.JDialog {
             txtServico.setText(os.getServicoRealizado() != null ? os.getServicoRealizado() : "");
 
             BigDecimal valor = os.getValorMaoObra() != null ? os.getValorMaoObra() : BigDecimal.ZERO;
-            txtValor.setText(String.format(Locale.forLanguageTag("pt-BR"), "%.2f", valor));
+            com.oficina.util.MascaraMonetaria.setValor(txtValor, valor);
 
             DefaultComboBoxModel<StatusOS> statusModel = new DefaultComboBoxModel<>(StatusOS.values());
             cboStatus.setModel(statusModel);
@@ -296,22 +298,7 @@ public class OrdemServicoDialog extends javax.swing.JDialog {
 
             String problema = txtProblema.getText();
             String servico = txtServico.getText();
-
-            String valorTexto = txtValor.getText().trim()
-                    .replace(".", "")
-                    .replace(",", ".");
-            BigDecimal valor;
-            try {
-                valor = valorTexto.isEmpty() ? BigDecimal.ZERO : new BigDecimal(valorTexto);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this,
-                        "Valor da mão de obra inválido. Informe um número como 150,00.",
-                        "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-                txtValor.requestFocus();
-                return;
-            }
-
+            BigDecimal valor = com.oficina.util.MascaraMonetaria.getValor(txtValor);
             StatusOS status = (StatusOS) cboStatus.getSelectedItem();
 
             ordemServico.setVeiculo(veiculo);

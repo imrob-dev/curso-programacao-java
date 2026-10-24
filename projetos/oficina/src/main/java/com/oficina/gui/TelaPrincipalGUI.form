@@ -133,6 +133,14 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JDesktopPane" name="desktop">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="3" green="3" red="3" type="rgb"/>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JDesktopPane() {&#xa;    private final java.awt.Image imgLogo = com.oficina.util.IconeUtil.getLogo();&#xa;&#xa;    @Override&#xa;    protected void paintComponent(java.awt.Graphics g) {&#xa;        super.paintComponent(g);&#xa;        if (imgLogo != null) {&#xa;            int w = getWidth();&#xa;            int h = getHeight();&#xa;            int imgW = imgLogo.getWidth(this);&#xa;            int imgH = imgLogo.getHeight(this);&#xa;            if (imgW &gt; 0 &amp;&amp; imgH &gt; 0) {&#xa;                double scale = Math.min((double) (w * 0.70) / imgW, (double) (h * 0.70) / imgH);&#xa;                if (scale &gt; 1.0) scale = 1.0;&#xa;                int targetW = (int) (imgW * scale);&#xa;                int targetH = (int) (imgH * scale);&#xa;                int x = (w - targetW) / 2;&#xa;                int y = (h - targetH) / 2;&#xa;                g.drawImage(imgLogo, x, y, targetW, targetH, this);&#xa;            }&#xa;        }&#xa;    }&#xa;}"/>
+      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
