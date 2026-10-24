@@ -22,6 +22,9 @@ import javax.swing.JOptionPane;
 public class TelaPrincipalGUI extends javax.swing.JFrame {
 
     private ClienteGUI telaClientes;
+    private VeiculoGUI telaVeiculos;
+    private OrdemServicoGUI telaOS;
+    private UsuarioGUI telaUsuarios;
 
     /**
      * Creates new form TelaPrincipalGUI
@@ -227,10 +230,12 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_mnClienteActionPerformed
 
     private void mnVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnVeiculoActionPerformed
-        JOptionPane.showMessageDialog(this,
-                "Módulo de Veículos em desenvolvimento (T05).",
-                "Veículos",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (telaVeiculos == null || telaVeiculos.isClosed()) {
+            telaVeiculos = new VeiculoGUI();
+            abrirJanela(telaVeiculos);
+        } else {
+            trazerParaFrente(telaVeiculos);
+        }
     }//GEN-LAST:event_mnVeiculoActionPerformed
 
     private void mnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnSairActionPerformed
@@ -238,17 +243,21 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_mnSairActionPerformed
 
     private void mnOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnOSActionPerformed
-        JOptionPane.showMessageDialog(this,
-                "Módulo de Ordens de Serviço em desenvolvimento (T06).",
-                "Ordens de Serviço",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (telaOS == null || telaOS.isClosed()) {
+            telaOS = new OrdemServicoGUI();
+            abrirJanela(telaOS);
+        } else {
+            trazerParaFrente(telaOS);
+        }
     }//GEN-LAST:event_mnOSActionPerformed
 
     private void mnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnUsuarioActionPerformed
-        JOptionPane.showMessageDialog(this,
-                "Módulo de Cadastro de Usuários em desenvolvimento (T03).",
-                "Usuários",
-                JOptionPane.INFORMATION_MESSAGE);
+        if (telaUsuarios == null || telaUsuarios.isClosed()) {
+            telaUsuarios = new UsuarioGUI();
+            abrirJanela(telaUsuarios);
+        } else {
+            trazerParaFrente(telaUsuarios);
+        }
     }//GEN-LAST:event_mnUsuarioActionPerformed
 
     private void mnTrocarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnTrocarUsuarioActionPerformed
@@ -258,12 +267,9 @@ public class TelaPrincipalGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_mnTrocarUsuarioActionPerformed
 
     private void mnSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnSobreActionPerformed
-        JOptionPane.showMessageDialog(this,
-                "Oficina do Bairro – Sistema de Gestão de Oficina Mecânica\n"
-                + "Versão 1.0\n"
-                + "Desenvolvido durante o Curso de Programação Java",
-                "Sobre",
-                JOptionPane.INFORMATION_MESSAGE);
+        SobreGUI sobre = new SobreGUI(this, true);
+        sobre.setLocationRelativeTo(this);
+        sobre.setVisible(true);
     }//GEN-LAST:event_mnSobreActionPerformed
 
     private void abrirJanela(JInternalFrame janela) {

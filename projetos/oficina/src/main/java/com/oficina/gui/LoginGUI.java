@@ -195,42 +195,14 @@ public class LoginGUI extends javax.swing.JFrame {
     }
 
     private boolean autenticarNoBanco(String login, String senha) {
-        String sql = "SELECT id, nome, perfil, ativo FROM usuario WHERE LOWER(login) = LOWER(?) AND senha_hash = ?";
-        String hash = com.oficina.util.Criptografia.sha256(senha);
-
-        try (java.sql.Connection con = com.oficina.config.Banco.conectar();
-             java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, login);
-            ps.setString(2, hash);
-
-            try (java.sql.ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    boolean ativo = rs.getBoolean("ativo");
-                    // RN03: Usuário inativo não entra no sistema
-                    if (ativo) {
-                        int id = rs.getInt("id");
-                        String nome = rs.getString("nome");
-                        String perfilStr = rs.getString("perfil");
-                        com.oficina.model.Perfil perfil = "ADMIN".equalsIgnoreCase(perfilStr)
-                                ? com.oficina.model.Perfil.ADMIN
-                                : com.oficina.model.Perfil.ATENDENTE;
-                        com.oficina.model.Usuario u = new com.oficina.model.Usuario(id, nome, login, perfil, true);
-                        com.oficina.util.Sessao.iniciar(u);
-                        return true;
-                    }
-                    return false;
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Aviso na autenticação via banco: " + ex.getMessage());
-            // Fallback de contingência caso o banco esteja inacessível
-            if ("admin".equalsIgnoreCase(login) && "admin123".equals(senha)) {
-                com.oficina.model.Usuario u = new com.oficina.model.Usuario(1, "Administrador", "admin", com.oficina.model.Perfil.ADMIN, true);
-                com.oficina.util.Sessao.iniciar(u);
-                return true;
-            }
+        try {
+            com.oficina.service.AutenticacaoService authService = new com.oficina.service.AutenticacaoService();
+            com.oficina.model.Usuario usuario = authService.entrar(login, senha);
+            com.oficina.util.Sessao.iniciar(usuario);
+            return true;
+        } catch (com.oficina.service.RegraNegocioException ex) {
+            return false;
         }
-        return false;
     }
 
     /**

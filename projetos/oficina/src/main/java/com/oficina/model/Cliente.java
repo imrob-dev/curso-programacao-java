@@ -1,19 +1,30 @@
 package com.oficina.model;
 
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import org.hibernate.validator.constraints.br.CPF;
+import lombok.NoArgsConstructor;
 
+/**
+ * Entidade Cliente da Oficina Mecânica.
+ */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Cliente {
+
     private Integer id;
     private String nome;
     private String telefone;
-    
-    @NotBlank(message = "O CPF é obrigatório")
-    @CPF(message = "O CPF informado não é válido")
     private String cpf;
+
+    public Cliente(String nome, String telefone, String cpf) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.cpf = cpf;
+    }
+
+    @Override
+    public String toString() {
+        return nome != null ? nome : "";
+    }
 }
